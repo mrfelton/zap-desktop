@@ -6,6 +6,7 @@ import hand from 'icons/hand.svg'
 import FaAngleDown from 'react-icons/lib/fa/angle-down'
 
 import { btc } from 'lib/utils'
+import AmountInput from './AmountInput'
 import styles from './Request.scss'
 
 const Request = ({
@@ -40,6 +41,13 @@ const Request = ({
 
       <div className={styles.content}>
         <section className={styles.amount}>
+          <AmountInput
+            amount={amount}
+            currency="bitcoin"
+            crypto={crypto}
+            onChange={setRequestAmount}
+          />
+
           <div className={styles.top}>
             <label htmlFor="amount">Amount</label>
             <span />

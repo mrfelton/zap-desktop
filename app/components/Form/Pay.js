@@ -7,6 +7,7 @@ import link from 'icons/link.svg'
 import FaAngleDown from 'react-icons/lib/fa/angle-down'
 
 import { btc } from 'lib/utils'
+import AmountInput from './AmountInput'
 
 import styles from './Pay.scss'
 
@@ -127,6 +128,18 @@ class Pay extends Component {
           </section>
 
           <section className={styles.amount}>
+            <AmountInput
+              amount={currentAmount}
+              className={`${styles.amountContainer} ${isLn ? styles.ln : ''} ${showErrors.amount &&
+                styles.error}`}
+              currency="bitcoin"
+              crypto={crypto}
+              onChange={setPayAmount}
+              onBlur={onPayAmountBlur}
+              readOnly={isLn}
+              autoFocus={isOnchain}
+            />
+
             <div className={styles.top}>
               <label htmlFor="amount">Amount</label>
               <span />
