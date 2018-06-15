@@ -89,7 +89,9 @@
       {
         "from": "resources/bin/${platform}",
         "to": "bin",
-        "filter": [ "lnd*" ]
+        "filter": [
+          "lnd*"
+        ]
       }
     ]
   },
@@ -158,7 +160,7 @@
     "cross-env": "^5.0.0",
     "cross-spawn": "^5.1.0",
     "css-loader": "^0.28.3",
-    "electron-builder": "^20.15.1",
+    "electron-builder": "^20.15.0",
     "electron-devtools-installer": "^2.2.1",
     "enzyme": "^2.9.1",
     "enzyme-to-json": "^1.5.1",
