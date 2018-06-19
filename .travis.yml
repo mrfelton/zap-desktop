@@ -11,7 +11,7 @@ env:
   - TEST=test-ci
 
 node_js:
-  - node
+  - 10
   - 8
 
 cache:
