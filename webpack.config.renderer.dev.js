@@ -224,8 +224,8 @@ export default merge.smart(baseConfig, {
      * By default, use 'development' as NODE_ENV. This can be overriden with
      * 'staging', for example, by changing the ENV variables in the npm scripts
      */
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development'
     }),
 
     new webpack.LoaderOptionsPlugin({
