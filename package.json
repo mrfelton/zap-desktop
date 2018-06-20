@@ -5,9 +5,9 @@
   "description": "desktop application for the lightning network",
   "scripts": {
     "build": "concurrently --raw \"npm run build-dll\" \"npm run build-main\" \"npm run build-renderer\"",
-    "build-dll": "cross-env NODE_ENV=development webpack --require babel-register --config webpack.config.renderer.dev.dll.js --progress",
-    "build-main": "cross-env NODE_ENV=production webpack --require babel-register  --config webpack.config.main.prod.js --progress",
-    "build-renderer": "cross-env NODE_ENV=production  webpack --require babel-register --config webpack.config.renderer.prod.js --progress",
+    "build-dll": "webpack --require babel-register --config webpack.config.renderer.dev.dll.js --progress",
+    "build-main": "webpack --require babel-register  --config webpack.config.main.prod.js --progress",
+    "build-renderer": "webpack --require babel-register --config webpack.config.renderer.prod.js --progress",
     "dev": "cross-env START_HOT=1 npm run start-renderer-dev",
     "flow": "flow",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
