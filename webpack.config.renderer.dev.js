@@ -36,12 +36,7 @@ export default merge.smart(baseConfig, {
 
   mode: 'development',
 
-  entry: [
-    'react-hot-loader/patch',
-    `webpack-dev-server/client?http://localhost:${port}/`,
-    'webpack/hot/only-dev-server',
-    path.join(__dirname, 'app/index.js')
-  ],
+  entry: ['react-hot-loader/patch', 'webpack/hot/only-dev-server', path.join(__dirname, 'app/index.js')],
 
   output: {
     publicPath: `http://localhost:${port}/dist/`
@@ -201,14 +196,6 @@ export default merge.smart(baseConfig, {
       sourceType: 'var'
     }),
 
-    /**
-     * https://webpack.js.org/concepts/hot-module-replacement/
-     */
-    new webpack.HotModuleReplacementPlugin({
-      // @TODO: Waiting on https://github.com/jantimon/html-webpack-plugin/issues/533
-      // multiStep: true
-    }),
-
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
@@ -223,31 +210,26 @@ export default merge.smart(baseConfig, {
     __filename: false
   },
 
-  devServer: {
+  serve: {
     port,
-    publicPath,
-    compress: true,
-    noInfo: true,
-    stats: 'errors-only',
-    inline: true,
-    lazy: false,
-    hot: true,
-    headers: { 'Access-Control-Allow-Origin': '*' },
-    contentBase: path.join(__dirname, 'dist'),
-    watchOptions: {
-      aggregateTimeout: 300,
-      ignored: /node_modules/,
-      poll: 100
+    content: path.join(__dirname, 'dist'),
+    dev: {
+      publicPath,
+      stats: 'errors-only',
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      watchOptions: {
+        aggregateTimeout: 300,
+        ignored: /node_modules/,
+        poll: 100
+      }
     },
-    historyApiFallback: {
-      verbose: true,
-      disableDotRule: false
-    },
-    before() {
-      if (process.env.START_HOT) {
-        spawn('npm', ['run', 'start-main-dev'], { shell: true, env: process.env, stdio: 'inherit' })
-          .on('close', code => process.exit(code))
-          .on('error', spawnError => mainLog.error(spawnError))
+    on: {
+      listening: () => {
+        if (process.env.START_HOT) {
+          spawn('npm', ['run', 'start-main-dev'], { shell: true, env: process.env, stdio: 'inherit' })
+            .on('close', code => process.exit(code))
+            .on('error', spawnError => mainLog.error(spawnError))
+        }
       }
     }
   },
