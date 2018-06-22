@@ -12,7 +12,6 @@ import fs from 'fs'
 import webpack from 'webpack'
 import merge from 'webpack-merge'
 import { spawn, execSync } from 'child_process'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import AddAssetHtmlPlugin from 'add-asset-html-webpack-plugin'
 import CspHtmlWebpackPlugin from 'csp-html-webpack-plugin'
@@ -218,10 +217,6 @@ export default merge.smart(baseConfig, {
       debug: true
     }),
 
-    new ExtractTextPlugin({
-      filename: '[name].css'
-    }),
-
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'app.html')
     }),
@@ -243,8 +238,22 @@ export default merge.smart(baseConfig, {
         'https://testnet-api.smartbit.com.au'
       ],
       'script-src': ["'self'", 'http://localhost:*', "'unsafe-eval'"],
-      'font-src': ["'self'", 'data:', 'http://localhost:*', 'https://fonts.googleapis.com', 'https://s3.amazonaws.com', 'https://fonts.gstatic.com'],
-      'style-src': ["'self'", 'blob:', 'https://fonts.googleapis.com', 'https://s3.amazonaws.com', 'https://fonts.gstatic.com', "'unsafe-inline'"]
+      'font-src': [
+        "'self'",
+        'data:',
+        'http://localhost:*',
+        'https://fonts.googleapis.com',
+        'https://s3.amazonaws.com',
+        'https://fonts.gstatic.com'
+      ],
+      'style-src': [
+        "'self'",
+        'blob:',
+        'https://fonts.googleapis.com',
+        'https://s3.amazonaws.com',
+        'https://fonts.gstatic.com',
+        "'unsafe-inline'"
+      ]
     })
   ],
 
@@ -297,9 +306,5 @@ export default merge.smart(baseConfig, {
           .on('error', spawnError => mainLog.error(spawnError))
       }
     }
-  },
-
-  optimization: {
-    noEmitOnErrors: true
   }
 })

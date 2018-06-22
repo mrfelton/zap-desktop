@@ -3,9 +3,9 @@
  */
 
 import path from 'path'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import CspHtmlWebpackPlugin from 'csp-html-webpack-plugin'
+import MiniCSSExtractPlugin from 'mini-css-extract-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import merge from 'webpack-merge'
 import baseConfig from './webpack.config.base'
@@ -30,16 +30,14 @@ export default merge.smart(baseConfig, {
       // Extract all .global.css to style.css as is
       {
         test: /\.global\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: 'css-loader',
-          fallback: 'style-loader'
-        })
+        use: [MiniCSSExtractPlugin.loader, 'css-loader']
       },
       // Pipe other styles through css modules and append to style.css
       {
         test: /^((?!\.global).)*\.css$/,
-        use: ExtractTextPlugin.extract({
-          use: {
+        use: [
+          MiniCSSExtractPlugin.loader,
+          {
             loader: 'css-loader',
             options: {
               modules: true,
@@ -47,42 +45,30 @@ export default merge.smart(baseConfig, {
               localIdentName: '[name]__[local]__[hash:base64:5]'
             }
           }
-        })
+        ]
       },
       // Add SASS support  - compile all .global.scss files and pipe it to style.css
       {
         test: /\.global\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            {
-              loader: 'css-loader'
-            },
-            {
-              loader: 'sass-loader'
-            }
-          ],
-          fallback: 'style-loader'
-        })
+        use: [MiniCSSExtractPlugin.loader, 'css-loader', 'sass-loader']
       },
       // Add SASS support  - compile all other .scss files and pipe it to style.css
       {
         test: /^((?!\.global).)*\.scss$/,
-        use: ExtractTextPlugin.extract({
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                importLoaders: 1,
-                localIdentName: '[name]__[local]__[hash:base64:5]'
-              }
-            },
-            {
-              loader: 'sass-loader'
+        use: [
+          MiniCSSExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 1,
+              localIdentName: '[name]__[local]__[hash:base64:5]'
             }
-          ]
-        })
+          },
+          'sass-loader'
+        ]
       },
+
       // WOFF Font
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -141,7 +127,9 @@ export default merge.smart(baseConfig, {
   },
 
   plugins: [
-    new ExtractTextPlugin('style.css'),
+    new MiniCSSExtractPlugin({
+      filename: '[name].css'
+    }),
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.OPEN_ANALYZER === 'true' ? 'server' : 'disabled',
@@ -155,10 +143,41 @@ export default merge.smart(baseConfig, {
     new CspHtmlWebpackPlugin({
       'default-src': "'self'",
       'object-src': "'none'",
-      'connect-src': ["'self'", 'https://api.coinmarketcap.com', 'https://zap.jackmallers.com', 'https://testnet-api.smartbit.com.au'],
+      'connect-src': [
+        "'self'",
+        'https://api.coinmarketcap.com',
+        'https://zap.jackmallers.com',
+        'https://testnet-api.smartbit.com.au'
+      ],
       'script-src': ["'self'"],
-      'font-src': ["'self'", 'data:', 'https://fonts.googleapis.com', 'https://s3.amazonaws.com', 'https://fonts.gstatic.com'],
-      'style-src': ["'self'", 'blob:', 'https://fonts.googleapis.com', 'https://s3.amazonaws.com', 'https://fonts.gstatic.com', "'unsafe-inline'"]
+      'font-src': [
+        "'self'",
+        'data:',
+        'https://fonts.googleapis.com',
+        'https://s3.amazonaws.com',
+        'https://fonts.gstatic.com'
+      ],
+      'style-src': [
+        "'self'",
+        'blob:',
+        'https://fonts.googleapis.com',
+        'https://s3.amazonaws.com',
+        'https://fonts.gstatic.com',
+        "'unsafe-inline'"
+      ]
     })
-  ]
+  ],
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        styles: {
+          name: 'style',
+          test: /\.(sa|sc|c)ss$/,
+          chunks: 'all',
+          enforce: true
+        }
+      }
+    }
+  }
 })
