@@ -1,4 +1,4 @@
-import bitcoin from 'bitcoinjs-lib'
+import networks from 'bitcoinjs-lib/src/networks'
 
 import { ipcRenderer } from 'electron'
 
@@ -36,17 +36,17 @@ export const receiveInfo = (event, data) => dispatch => {
   dispatch({ type: RECEIVE_INFO, data })
 }
 
-const networks = {
+const bitcoinNetworks = {
   testnet: {
     name: 'Testnet',
     explorerUrl: 'https://testnet.smartbit.com.au',
-    bitcoinJsNetwork: bitcoin.networks.testnet,
+    bitcoinJsNetwork: networks.testnet,
     unitPrefix: 't'
   },
   mainnet: {
     name: null, // no name since it is the presumed default
     explorerUrl: 'https://smartbit.com.au',
-    bitcoinJsNetwork: bitcoin.networks.bitcoin,
+    bitcoinJsNetwork: networks.bitcoin,
     unitPrefix: ''
   }
 }
@@ -61,7 +61,7 @@ const ACTION_HANDLERS = {
   [RECEIVE_INFO]: (state, { data }) => ({
     ...state,
     infoLoading: false,
-    network: data.testnet ? networks.testnet : networks.mainnet,
+    network: data.testnet ? bitcoinNetworks.testnet : bitcoinNetworks.mainnet,
     data
   }),
   [SET_WALLET_CURRENCY_FILTERS]: (state, { showWalletCurrencyFilters }) => ({

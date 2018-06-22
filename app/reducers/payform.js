@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import bitcoin from 'bitcoinjs-lib'
+import address from 'bitcoinjs-lib/src/address'
 
 import { setFormType } from './form'
 import { tickerSelectors } from './ticker'
@@ -144,7 +144,7 @@ payFormSelectors.isOnchain = createSelector(
   infoSelectors.networkSelector,
   (input, network) => {
     try {
-      bitcoin.address.toOutputScript(input, network.bitcoinJsNetwork)
+      address.toOutputScript(input, network.bitcoinJsNetwork)
       return true
     } catch (e) {
       return false
