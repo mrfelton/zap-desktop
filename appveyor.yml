@@ -3,8 +3,9 @@ os: unstable
 environment:
   DEBUG: electron-builder
   matrix:
-    - nodejs_version: 10
-    - nodejs_version: 8
+    - nodejs_version: STABLE
+      publish_build: true
+    - nodejs_version: LTS
 
 cache:
   - '%APPDATA%\npm-cache'
@@ -38,4 +39,4 @@ test_script:
   - yarn test-ci
 
 deploy_script:
-- if not defined APPVEYOR_PULL_REQUEST_NUMBER if %APPVEYOR_REPO_BRANCH%==master yarn release
+- if not defined APPVEYOR_PULL_REQUEST_NUMBER if %APPVEYOR_REPO_BRANCH%==master if defined $env:publish_build yarn release
