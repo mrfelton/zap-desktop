@@ -38,10 +38,4 @@ test_script:
   - yarn test-ci
 
 deploy_script:
-   branches:
-      only:
-         - master
-           yarn release
-
-deploy_script:
 - if not defined APPVEYOR_PULL_REQUEST_NUMBER if %APPVEYOR_REPO_BRANCH%==master yarn release
