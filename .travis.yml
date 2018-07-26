@@ -41,7 +41,7 @@ before_script:
   - sleep 3
 
 script:
-  - yarn lint-ci && yarn build && yarn test-ci
+  - yarn build && yarn test-ci
 
 after_success:
   - npm run coveralls
