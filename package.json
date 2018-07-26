@@ -4,7 +4,7 @@
   "version": "0.2.0-beta",
   "description": "desktop application for the lightning network",
   "scripts": {
-    "build": "npm run flow && concurrently --raw \"npm:build-main\" \"npm:build-renderer\"",
+    "build": "concurrently --raw \"npm:build-main\" \"npm:build-renderer\"",
     "build-dll": "webpack --require babel-register --config webpack.config.renderer.dev.dll.js --progress",
     "build-main": "webpack --require babel-register  --config webpack.config.main.prod.js --progress",
     "build-renderer": "webpack --require babel-register --config webpack.config.renderer.prod.js --progress",
