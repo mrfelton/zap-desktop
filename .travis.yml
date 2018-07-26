@@ -53,8 +53,7 @@ jobs:
         provider: script
         script: yarn build && yarn release
         on:
-          all_branches: true
-
+          branch: master
 
     - os: osx
       name: Deploy to Github
@@ -64,4 +63,4 @@ jobs:
         provider: script
         script: yarn build && yarn release
         on:
-          all_branches: true
+          branch: master
