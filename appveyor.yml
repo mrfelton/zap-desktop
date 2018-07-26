@@ -40,8 +40,6 @@ test_script:
 
 deploy_script:
 - ps: >-
-    if($env:appveyor_repo_branch -eq 'master' ) {
-      if($env:publish_build -eq true ) {
-        yarn release
-      }
+    if($env:appveyor_repo_branch -eq 'master') -and ($env:publish_build) {
+      yarn release
     }
