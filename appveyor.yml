@@ -39,4 +39,9 @@ test_script:
   - yarn test-ci
 
 deploy_script:
-- if not defined APPVEYOR_PULL_REQUEST_NUMBER if %APPVEYOR_REPO_BRANCH%==master if defined $env:publish_build yarn release
+- ps: >-
+    if($env:appveyor_repo_branch -eq 'master' ) {
+      if($env:publish_build -eq true ) {
+        yarn release
+      }
+    }
