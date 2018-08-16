@@ -1,5 +1,6 @@
 import grpc from 'grpc'
 import { loadSync } from '@grpc/proto-loader'
+import { status } from 'grpc'
 import { getDeadline, validateHost, createSslCreds, createMacaroonCreds } from './util'
 import methods from './methods'
 import { mainLog } from '../utils/log'
