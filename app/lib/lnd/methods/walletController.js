@@ -147,8 +147,7 @@ export function initWallet(
       {
         wallet_password: Buffer.from(wallet_password),
         cipher_seed_mnemonic,
-        aezeed_passphrase: Buffer.from(aezeed_passphrase, 'hex'),
-        recovery_window: 250
+        aezeed_passphrase: Buffer.from(aezeed_passphrase, 'hex')
       },
       (err, data) => {
         if (err) {
