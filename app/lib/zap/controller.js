@@ -105,9 +105,6 @@ class ZapController {
       this.mainWindow.loadURL(`file://${__dirname}/dist/index.html`)
     }
 
-    // Register IPC listeners so that we can react to instructions coming from the app.
-    this._registerIpcListeners()
-
     // Show the window as soon as the application has finished loading.
     this.mainWindow.webContents.on('did-finish-load', () => {
       this.mainWindow.show()
@@ -130,8 +127,28 @@ class ZapController {
   // FSM Callbacks
   // ------------------------------------
 
+  onOnboarding() {
+    mainLog.debug('[FSM] onOnboarding...')
+
+    // Deregister IPC listeners so that we can start fresh.
+    this._removeIpcListeners()
+
+    // Ensure wallet is disconnected.
+    this.disconnectLightningWallet()
+
+    // If Neutrino is running, kill it.
+    if (this.neutrino) {
+      this.neutrino.stop()
+    }
+  }
+
   onStartOnboarding() {
     mainLog.debug('[FSM] onStartOnboarding...')
+
+    // Register IPC listeners so that we can react to instructions coming from the app.
+    this._registerIpcListeners()
+
+    // Notify the app to start the onboarding process.
     this.sendMessage('startOnboarding', this.lndConfig)
   }
 
@@ -199,9 +216,6 @@ class ZapController {
     if (this.neutrino) {
       this.neutrino.stop()
     }
-
-    // Give the grpc connections a chance to be properly closed out.
-    return new Promise(resolve => setTimeout(resolve, 200))
   }
 
   onTerminate() {
@@ -258,6 +272,9 @@ class ZapController {
    * Create and subscribe to the Lightning service.
    */
   async startLightningWallet() {
+    if (this.lightningGrpcConnected) {
+      return
+    }
     mainLog.info('Starting lightning wallet...')
     this.lightning = new Lightning()
 
@@ -287,7 +304,7 @@ class ZapController {
     mainLog.info('Disconnecting lightning Wallet...')
 
     // Disconnect streams.
-    this.lightning.unsubscribe()
+    this.lightning.disconnect()
 
     // Update our internal state.
     this.lightningGrpcConnected = false
@@ -312,12 +329,12 @@ class ZapController {
       })
     })
 
-    this.neutrino.on('close', code => {
+    this.neutrino.on('close', (code, lastError) => {
       mainLog.info(`Lnd process has shut down (code ${code})`)
       if (this.is('running') || this.is('connected')) {
         dialog.showMessageBox({
           type: 'error',
-          message: `Lnd has unexpectadly quit`
+          message: `Lnd has unexpectadly quit: ${lastError}`
         })
         this.terminate()
       }
@@ -400,11 +417,20 @@ class ZapController {
   _registerIpcListeners() {
     ipcMain.on('startLnd', (event, options: onboardingOptions) => this.finishOnboarding(options))
   }
+
+  /**
+   * Add IPC event listeners...
+   */
+  _removeIpcListeners() {
+    ipcMain.removeAllListeners('startLnd')
+    ipcMain.removeAllListeners('walletUnlocker')
+    ipcMain.removeAllListeners('lnd')
+  }
 }
 
 StateMachine.factory(ZapController, {
   transitions: [
-    { name: 'startOnboarding', from: 'none', to: 'onboarding' },
+    { name: 'startOnboarding', from: '*', to: 'onboarding' },
     { name: 'startLnd', from: 'onboarding', to: 'running' },
     { name: 'connectLnd', from: 'onboarding', to: 'connected' },
     { name: 'terminate', from: '*', to: 'terminated' }

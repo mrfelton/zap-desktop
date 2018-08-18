@@ -37,6 +37,9 @@ describe('Neutrino', function() {
       it('should set the "lndCfilterHeight" property to 0', () => {
         expect(this.neutrino.lndCfilterHeight).toEqual(0)
       })
+      it('should set the "lastError" property to be null', () => {
+        expect(this.neutrino.lastError).toEqual(null)
+      })
     })
   })
 
@@ -165,6 +168,35 @@ describe('Neutrino', function() {
       })
       it('should return false if the current state does not matche', () => {
         expect(this.neutrino.is('some-other-state')).toEqual(false)
+      })
+    })
+  })
+
+  describe('.start', () => {
+    describe('called when neutrino is already running', () => {
+      beforeEach(() => {
+        this.neutrino = new Neutrino()
+        this.neutrino.process = 123
+      })
+      it('should throw an error', () => {
+        expect(() => {
+          this.neutrino.start()
+        }).toThrow()
+      })
+    })
+  })
+
+  describe('.stop', () => {
+    describe('called when neutrino is already running', () => {
+      beforeEach(() => {
+        this.neutrino = new Neutrino()
+        this.neutrino.process = {
+          kill: jest.fn()
+        }
+        this.neutrino.stop()
+      })
+      it('should kill the neutrino process', () => {
+        expect(this.neutrino.process).toBeNull()
       })
     })
   })
