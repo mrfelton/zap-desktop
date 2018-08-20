@@ -5,8 +5,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  line-height: 18px;
   margin-top: 10%;
 
   li {
@@ -29,6 +27,11 @@
   }
 }
 
+label {
+  font-size: 14px;
+  line-height: 18px;
+}
+
 .word {
   margin: 0 3px;
   background-color: inherit;
@@ -37,6 +40,8 @@
   padding: 5px 10px;
   color: $white;
   font-family: 'Courier', courier, sans-serif;
+  font-size: 14px;
+  line-height: 18px;
 
   &.valid {
     color: $green;
