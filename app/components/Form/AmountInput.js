@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import CurrencyIcon from 'components/CurrencyIcon'
-import styles from './RequestForm.scss'
+import styles from './AmountInput.scss'
 
 class AmountInput extends React.Component {
   constructor(props) {
@@ -11,13 +11,24 @@ class AmountInput extends React.Component {
     this.handleKeyDown = this.handleKeyDown.bind(this)
   }
 
+  componentDidUpdate() {
+    if (this.resetCursorPosition) {
+      this.input.setSelectionRange(this.resetCursorPosition, this.resetCursorPosition)
+      this.resetCursorPosition = null
+    }
+  }
+
   parseNumber(_value) {
     let value = _value.replace(/[^0-9,.]/g, '')
     let integer = null
     let fractional = null
 
-    if (value == '') { value = '0' }
-    if (value*1.0 < 0) { value = '0.0' }
+    if (value == '') {
+      value = '0'
+    }
+    if (value * 1.0 < 0) {
+      value = '0.0'
+    }
 
     // parse integer and fractional value so that we can reproduce
     // the same string value afterwards
@@ -25,7 +36,7 @@ class AmountInput extends React.Component {
     // [0, ''] == 0.
     // [0, null] == 0
     if (value.match(/^[0-9]*[.,][0-9]*$/)) {
-      [integer, fractional] = value.toString().split(/[.,]/)
+      ;[integer, fractional] = value.toString().split(/[.,]/)
       if (!fractional) {
         fractional = ''
       }
@@ -45,7 +56,7 @@ class AmountInput extends React.Component {
     let value
     if (fractional && fractional.length > 0) {
       value = `${integer}.${fractional}`
-    } else { 
+    } else {
       // empty string means `XYZ.` instead of just plain `XYZ`
       if (fractional === '') {
         value = `${integer}.`
@@ -60,33 +71,30 @@ class AmountInput extends React.Component {
     const _value = e.target.value
     const [integer, fractional] = this.parseNumber(_value)
     let value = this.formatValue(integer, fractional)
-    
+
     // reset cursor position here?
     if (value != _value) {
       this.resetCursorPosition = e.target.selectionEnd
     }
 
-    this.props.onChange(value)
+    const { onChange } = this.props
+    onChange(value)
   }
 
-  componentDidUpdate() {
-    if (this.resetCursorPosition) {
-      this.refs.input.setSelectionRange(this.resetCursorPosition, this.resetCursorPosition)
-      this.resetCursorPosition = null
-    }
-  }
-
-  shiftValue(value, delta) {
-    let [integer, fractional] = this.parseNumber(value)
+  shiftValue(_value, _delta) {
+    let [integer, fractional] = this.parseNumber(_value)
+    let value
+    let delta
 
     if (fractional) {
-      delta = delta / (10 ** fractional.length)
+      delta = _delta / 10
+      delta ** fractional.length
       value = (parseFloat(value) + delta).toFixed(fractional.length)
     } else {
-      value = (integer*1 + delta).toString()
+      value = (integer * 1 + delta).toString()
     }
 
-    if (value < 0) { 
+    if (value < 0) {
       if (fractional && fractional.length > 0) {
         value = (0.0).toFixed(fractional.length)
       } else {
@@ -98,75 +106,58 @@ class AmountInput extends React.Component {
   }
 
   handleKeyDown(e) {
-    let value = e.target.value
+    const { onChange } = this.props
+
+    let { value } = e.target
 
     if (e.key === 'ArrowUp') {
       e.preventDefault()
       value = this.shiftValue(value, 1)
-      this.props.onChange(value)
+      onChange(value)
       return
     }
 
     if (e.key === 'ArrowDown') {
       e.preventDefault()
       value = this.shiftValue(value, -1)
-      this.props.onChange(value)
+      onChange(value)
       return
     }
 
     // do not allow multiple commas or dots
-    if ((e.key === '.') || (e.key === ',')) {
+    if (e.key === '.' || e.key === ',') {
       if (value.search(/[.,]/) >= 0) {
         e.preventDefault()
       }
       return
     }
 
-    if ((e.key.length == 1) && !e.key.match(/^[0-9.,]$/)) {
+    if (e.key.length == 1 && !e.key.match(/^[0-9.,]$/)) {
       e.preventDefault()
       return
     }
   }
 
   render() {
-    const {
-      amount,
-      autoFocus,
-      className,
-      crypto,
-      currency,
-      inputClassName,
-      onBlur,
-      readOnly,
-    } = this.props
-
-    let fontSize = 170 - (amount.length ** 2)
-    if (fontSize < 30) {
-      fontSize = 30
-    }
-
-    // for width to work, we need the font to be monospace or more margin for error
-    const inputStyle = { 
-      width: fontSize/1.5 * amount.length,
-      fontSize: fontSize,
-    }
+    const { amount, className, crypto, currency, inputClassName, onBlur, readOnly } = this.props
 
     return (
       <section className={className || styles.amountContainer}>
-        <label htmlFor='amount'>
+        <label htmlFor="amount">
           <CurrencyIcon currency={currency} crypto={crypto} />
         </label>
         <input
-          autoFocus={autoFocus}
+          type="number"
+          min="0"
+          size=""
+          placeholder="0.00000000"
           className={inputClassName}
-          id='amount'
+          id="amount"
           onBlur={onBlur}
           onChange={this.handleChange}
           onKeyDown={this.handleKeyDown}
           readOnly={readOnly}
-          ref='input'
-          style={inputStyle}
-          type='text'
+          ref={input => input}
           value={amount}
         />
       </section>
@@ -175,10 +166,14 @@ class AmountInput extends React.Component {
 }
 
 AmountInput.propTypes = {
-  amount: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
   crypto: PropTypes.string.isRequired,
   currency: PropTypes.string.isRequired,
-  onChange:PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  inputClassName: PropTypes.string,
+  onBlur: PropTypes.func,
+  readOnly: PropTypes.bool
 }
 
 export default AmountInput

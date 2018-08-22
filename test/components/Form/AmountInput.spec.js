@@ -1,6 +1,5 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import _ from 'lodash'
 
 import AmountInput from '../../../app/components/Form/AmountInput'
 
@@ -16,7 +15,7 @@ const defaultProps = {
   onChange: () => {}
 }
 
-const mountInput = (props) => {
+const mountInput = props => {
   wrapped = mount(<AmountInput {...defaultProps} {...props} />)
   input = wrapped.find('input')
   component = wrapped.instance()
@@ -25,35 +24,30 @@ const mountInput = (props) => {
 describe('AmountInput', () => {
   describe('render', () => {
     it('renders amount', () => {
-      mountInput({amount: '0.1234'})
+      mountInput({ amount: '0.1234' })
       expect(input.get(0).value).toEqual('0.1234')
     })
   })
 
   describe('input properties', () => {
     it('passes className to section', () => {
-      mountInput({className: 'rootClass'})
+      mountInput({ className: 'rootClass' })
       expect(wrapped.find('section').props().className).toEqual('rootClass')
     })
 
     it('passes readOnly to input', () => {
-      mountInput({readOnly: true})
+      mountInput({ readOnly: true })
       expect(input.props().readOnly).toEqual(true)
     })
 
     it('passes onBlur to input', () => {
       const callback = () => {}
-      mountInput({onBlur: callback})
+      mountInput({ onBlur: callback })
       expect(input.props().onBlur).toEqual(callback)
     })
 
-    it('passes onBlur to input', () => {
-      mountInput({autoFocus: true})
-      expect(input.props().autoFocus).toEqual(true)
-    })
-
     it('passes inputClassName to section', () => {
-      mountInput({inputClassName: 'inputClassName'})
+      mountInput({ inputClassName: 'inputClassName' })
       expect(input.props().className).toEqual('inputClassName')
     })
   })
@@ -112,7 +106,6 @@ describe('AmountInput', () => {
   })
 
   describe('shiftValue', () => {
-
     describe('inrcements', () => {
       mountInput()
       const test = (from, to) => {
@@ -145,7 +138,7 @@ describe('AmountInput', () => {
         test('0.00000009', '0.00000010')
       })
     })
-      
+
     describe('decrements', () => {
       mountInput()
       const component = mount(<AmountInput {...defaultProps} />).instance()
@@ -188,30 +181,30 @@ describe('AmountInput', () => {
     let component
     beforeEach(() => {
       onChange = jest.fn()
-      let props = {...defaultProps, onChange}
+      let props = { ...defaultProps, onChange }
       component = mount(<AmountInput {...props} />).instance()
     })
 
     it('sends value to parseNumber', () => {
-      spyOn(component, 'parseNumber').and.returnValue([0, 0]) 
+      jest.spyOn(component, 'parseNumber').and.returnValue([0, 0])
 
-      component.handleChange({target: { value: '123.0' }})
+      component.handleChange({ target: { value: '123.0' } })
       expect(component.parseNumber.calls.count()).toEqual(1)
       expect(component.parseNumber.calls.argsFor(0)).toEqual(['123.0'])
     })
 
     it('calls formatValue with presult from parseNumber', () => {
-      spyOn(component, 'formatValue').and.callThrough() 
+      jest.spyOn(component, 'formatValue').and.callThrough()
 
-      component.handleChange({target: { value: '123.0' }})
+      component.handleChange({ target: { value: '123.0' } })
       expect(component.formatValue.calls.count()).toEqual(1)
       expect(component.formatValue.calls.argsFor(0)).toEqual(['123', '0'])
     })
 
     it('calls props.onChange with formatValue result', () => {
-      spyOn(component, 'formatValue').and.returnValue('456')
+      jest.spyOn(component, 'formatValue').and.returnValue('456')
 
-      component.handleChange({target: { value: '123.0' }})
+      component.handleChange({ target: { value: '123.0' } })
       expect(onChange).toHaveBeenCalledWith('456')
     })
   })
@@ -223,37 +216,37 @@ describe('AmountInput', () => {
     beforeEach(() => {
       wrapped = mount(<AmountInput {...defaultProps} />)
       component = wrapped.instance()
-      spyOn(component, 'shiftValue')
+      jest.spyOn(component, 'shiftValue')
 
       preventDefault = jest.fn()
 
       event = {
         key: 'ArrowUp',
         target: { value: '123' },
-        preventDefault,
+        preventDefault
       }
     })
 
     describe('ArrowUp', () => {
       it('calls shiftValue with delta = 1', () => {
-        component.handleKeyDown({...event, key: 'ArrowUp' })
+        component.handleKeyDown({ ...event, key: 'ArrowUp' })
         expect(component.shiftValue).toHaveBeenCalledWith('123', 1)
       })
 
       it('calls preventDefault', () => {
-        component.handleKeyDown({...event, key: 'ArrowUp' })
+        component.handleKeyDown({ ...event, key: 'ArrowUp' })
         expect(preventDefault).toHaveBeenCalled()
       })
     })
 
     describe('ArrowDown', () => {
       it('calls shiftValue with delta = -1', () => {
-        component.handleKeyDown({...event, key: 'ArrowDown' })
+        component.handleKeyDown({ ...event, key: 'ArrowDown' })
         expect(component.shiftValue).toHaveBeenCalledWith('123', -1)
       })
 
       it('calls preventDefault', () => {
-        component.handleKeyDown({...event, key: 'ArrowDown' })
+        component.handleKeyDown({ ...event, key: 'ArrowDown' })
         expect(preventDefault).toHaveBeenCalled()
       })
     })
@@ -267,42 +260,41 @@ describe('AmountInput', () => {
         event = {
           key: '.',
           target: { value: '123' },
-          preventDefault,
+          preventDefault
         }
       })
 
       it('allows adding dot to a number that has no dot', () => {
-        component.handleKeyDown({...event, target: { value: '123'}}) // no dot
+        component.handleKeyDown({ ...event, target: { value: '123' } }) // no dot
         expect(preventDefault).not.toHaveBeenCalled()
 
-        component.handleKeyDown({...event, key: ',', target: { value: '123'}}) // no dot
+        component.handleKeyDown({ ...event, key: ',', target: { value: '123' } }) // no dot
         expect(preventDefault).not.toHaveBeenCalled()
       })
 
       it('does not allow multiple dots in the number', () => {
-        component.handleKeyDown({...event, target: { value: '123.'}}) // has a dot
+        component.handleKeyDown({ ...event, target: { value: '123.' } }) // has a dot
         expect(preventDefault).toHaveBeenCalled()
 
-        component.handleKeyDown({...event, key: ',', target: { value: '123,'}}) // has a dot
+        component.handleKeyDown({ ...event, key: ',', target: { value: '123,' } }) // has a dot
         expect(preventDefault).toHaveBeenCalled()
       })
     })
 
     describe('Non-supported keys', () => {
       it('prevents event', () => {
-        component.handleKeyDown({...event, key: 'a'})
+        component.handleKeyDown({ ...event, key: 'a' })
         expect(preventDefault).toHaveBeenCalled()
 
-        component.handleKeyDown({...event, key: 'A'})
+        component.handleKeyDown({ ...event, key: 'A' })
         expect(preventDefault).toHaveBeenCalled()
 
-        component.handleKeyDown({...event, key: '-'})
+        component.handleKeyDown({ ...event, key: '-' })
         expect(preventDefault).toHaveBeenCalled()
 
-        component.handleKeyDown({...event, key: '?'})
+        component.handleKeyDown({ ...event, key: '?' })
         expect(preventDefault).toHaveBeenCalled()
       })
     })
   })
-
 })

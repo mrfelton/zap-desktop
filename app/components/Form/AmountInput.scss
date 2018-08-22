@@ -1,11 +1,14 @@
+@import '../../styles/variables.scss';
+
 .amountContainer {
   color: $main;
   display: flex;
   justify-content: center;
   min-height: 120px;
   margin-bottom: 20px;
-  
-  label, input[type=text] {
+
+  label,
+  input[type='text'] {
     color: inherit;
     display: inline-block;
     vertical-align: top;
@@ -26,8 +29,8 @@
       }
     }
   }
-  
-  input[type=text] {
+
+  input[type='number'] {
     font-family: monospace;
     width: 100px;
     font-size: 180px;
@@ -37,4 +40,3 @@
     font-weight: 200;
   }
 }
-

@@ -44,6 +44,7 @@ class Pay extends Component {
       payFormIsValid: { errors, isValid },
       currentCurrencyFilters,
       currencyName,
+      crypto,
 
       setPayAmount,
       onPayAmountBlur,
@@ -129,15 +130,14 @@ class Pay extends Component {
 
           <section className={styles.amount}>
             <AmountInput
-              amount={currentAmount}
+              amount={Number(currentAmount)}
               className={`${styles.amountContainer} ${isLn ? styles.ln : ''} ${showErrors.amount &&
                 styles.error}`}
-              currency="bitcoin"
+              currency={currencyName}
               crypto={crypto}
               onChange={setPayAmount}
               onBlur={onPayAmountBlur}
               readOnly={isLn}
-              autoFocus={isOnchain}
             />
 
             <div className={styles.top}>
@@ -212,6 +212,7 @@ Pay.propTypes = {
     showErrors: PropTypes.object.isRequired
   }).isRequired,
   currencyName: PropTypes.string.isRequired,
+  crypto: PropTypes.string.isRequired,
 
   isOnchain: PropTypes.bool.isRequired,
   isLn: PropTypes.bool.isRequired,
