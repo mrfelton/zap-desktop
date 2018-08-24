@@ -25,6 +25,7 @@ app.on('ready', () => {
   const mainWindow = new BrowserWindow({
     show: false,
     titleBarStyle: 'hidden',
+    useContentSize: true,
     width: 950,
     height: 600,
     minWidth: 950,

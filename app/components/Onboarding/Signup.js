@@ -6,14 +6,14 @@ import styles from './Signup.scss'
 
 const Signup = ({ signupForm, setSignupCreate, setSignupImport }) => (
   <div className={styles.container}>
-    <section className={`${styles.enable} ${signupForm.create ? styles.active : undefined}`}>
-      <div onClick={setSignupCreate}>
+    <section className={`${styles.option} ${signupForm.create ? styles.active : undefined}`}>
+      <div className={`${styles.button}`} onClick={setSignupCreate}>
         {signupForm.create ? <FaCircle /> : <FaCircleThin />}
         <span className={styles.label}>Create new wallet</span>
       </div>
     </section>
-    <section className={`${styles.disable} ${signupForm.import ? styles.active : undefined}`}>
-      <div onClick={setSignupImport}>
+    <section className={`${styles.option} ${signupForm.import ? styles.active : undefined}`}>
+      <div className={`${styles.button}`} onClick={setSignupImport}>
         {signupForm.import ? <FaCircle /> : <FaCircleThin />}
         <span className={styles.label}>Import existing wallet</span>
       </div>
