@@ -127,9 +127,9 @@
 }
 
 .activityContainer {
+  height: 100vh;
   background: $spaceblue;
   transition: opacity 0.25s;
-  height: calc(100vh - 304px);
   overflow-y: auto;
   overflow-x: hidden;
   padding-top: 20px;

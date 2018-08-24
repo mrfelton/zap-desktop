@@ -60,31 +60,16 @@
   bottom: 0;
   padding: 25px 40px;
   color: $white;
-  width: calc(100% - 80px);
+  width: 100%;
 
   .buttonsContainer {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 
-    .nextButton {
-      cursor: pointer;
-      transition: all 0.25s;
-      background: $darkspaceblue;
-      padding: 10px 30px 10px 40px;
-      width: 54px;
-      text-align: center;
-
-      &:hover {
-        background: lighten($darkspaceblue, 10%);
-      }
-    }
-
     .backButton {
-      cursor: pointer;
-      transition: all 0.25s;
-      padding: 10px 20px 10px 0;
-      text-align: center;
+      background-color: transparent;
+      padding-left: 0;
 
       &:hover {
         opacity: 0.5;

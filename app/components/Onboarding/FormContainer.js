@@ -13,47 +13,62 @@ const FormContainer = ({ title, description, back, next, children }) => (
   <div className={styles.container}>
     <div className={styles.titleBar} />
 
-    <header className={styles.header}>
-      <section>
-        <Isvg src={zapLogo} />
-      </section>
-      <section>
-        <div
-          className={styles.help}
-          onClick={() =>
-            shell.openExternal('https://ln-zap.github.io/zap-tutorials/zap-desktop-getting-started')
-          }
-        >
-          Need help?
-        </div>
-      </section>
-    </header>
-
-    <div className={styles.info}>
-      <h1>{title}</h1>
-      <p>{description}</p>
-    </div>
-
-    <div className={styles.content}>{children}</div>
-
-    <footer className={styles.footer}>
-      <div className={styles.buttonsContainer}>
+    <form onSubmit={next}>
+      <header className={styles.header}>
         <section>
-          {back && (
-            <div onClick={back} className={styles.backButton}>
-              <FaAngleLeft style={{ verticalAlign: 'top' }} /> Back
-            </div>
-          )}
+          <Isvg src={zapLogo} />
         </section>
         <section>
-          {next && (
-            <div onClick={next} className={styles.nextButton}>
-              Next <FaAngleRight style={{ verticalAlign: 'top' }} />
-            </div>
-          )}
+          <div
+            className={styles.help}
+            onClick={() =>
+              shell.openExternal(
+                'https://ln-zap.github.io/zap-tutorials/zap-desktop-getting-started'
+              )
+            }
+          >
+            Need help?
+          </div>
         </section>
+      </header>
+
+      <div className={styles.info}>
+        <h1>{title}</h1>
+        <p>{description}</p>
       </div>
-    </footer>
+
+      <div className={styles.content}>{children}</div>
+
+      <footer className={styles.footer}>
+        <div className={styles.buttonsContainer}>
+          <section>
+            {back && (
+              <button
+                type="button"
+                onClick={back}
+                className={`buttonSecondary ${styles.backButton}`}
+              >
+                <FaAngleLeft style={{ verticalAlign: 'top' }} /> Back
+              </button>
+            )}
+          </section>
+          <section>
+            {next && (
+              <button
+                type="submit"
+                onClick={e => {
+                  e.preventDefault()
+                  next()
+                }}
+                className={`buttonSecondary ${styles.nextButton}`}
+              >
+                Next <FaAngleRight style={{ verticalAlign: 'top' }} />
+              </button>
+            )}
+          </section>
+        </div>
+      </footer>
+    </form>
   </div>
 )
 

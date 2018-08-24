@@ -13,7 +13,7 @@
 
 .content {
   position: relative;
-  top: calc(50% - 250px);
+  top: calc(60% - 250px);
   min-height: 250px;
 
   .bolt svg {
@@ -22,8 +22,8 @@
   }
 
   h1 {
-    color: $main;
-    margin-top: 50px;
+    color: $gold;
+    margin-top: 45px;
     font-size: 25px;
   }
 }

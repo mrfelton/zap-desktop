@@ -4,51 +4,37 @@
   color: $white;
 
   section {
-    margin-bottom: 0;
+    margin: 0;
 
-    &.enable {
+    &.option {
+      .button {
+        width: 200px;
+        text-align: center;
+        display: flex;
+        padding: 20px;
+        border: 1px solid $white;
+        border-radius: 5px;
+        font-weight: 200;
+        cursor: pointer;
+        transition: all 0.25s;
+        margin-bottom: 20px;
+      }
+
       &.active {
-        div {
+        .button {
           color: $gold;
           border-color: $gold;
         }
       }
 
-      div:hover {
+      .button:hover {
         color: $gold;
         border-color: $gold;
       }
-    }
 
-    &.disable {
-      &.active {
-        div {
-          color: $gold;
-          border-color: $gold;
-        }
+      .label {
+        margin-left: 15px;
       }
-
-      div:hover {
-        color: $gold;
-        border-color: $gold;
-      }
-    }
-
-    div {
-      width: 150px;
-      text-align: center;
-      display: inline-block;
-      padding: 20px;
-      border: 1px solid $white;
-      border-radius: 5px;
-      font-weight: 200;
-      cursor: pointer;
-      transition: all 0.25s;
-      margin-bottom: 20px;
-    }
-
-    .label {
-      margin-left: 15px;
     }
   }
 }

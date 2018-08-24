@@ -4,7 +4,6 @@
   background: $bluegrey;
   color: $white;
   transition: background 0.25s;
-  height: 150px;
   padding: 20px 40px;
 }
 
@@ -33,7 +32,6 @@
   display: inline-block;
   vertical-align: top;
   width: 50%;
-  height: 150px;
 
   .leftContent,
   .rightContent {
@@ -140,7 +138,7 @@
         transition: 0.25s all;
 
         &.active {
-          background: $main;
+          background: $gold;
           color: $spaceborder;
           border-color: $spaceborder;
           opacity: 1;
@@ -151,7 +149,7 @@
 
   svg {
     font-size: 100px;
-    color: $main;
+    color: $gold;
   }
 }
 
