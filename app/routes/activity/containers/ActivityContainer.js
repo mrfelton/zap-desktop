@@ -129,6 +129,9 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => ({
         fiatTickers: stateProps.ticker.fiatTickers,
         disableSubMenu: dispatchProps.disableSubMenu,
         setFiatTicker: dispatchProps.setFiatTicker
+      },
+      i18nProps: {
+        disableSubMenu: dispatchProps.disableSubMenu
       }
     }
   }
