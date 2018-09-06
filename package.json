@@ -16,6 +16,7 @@
     "fetch-lnd": "node ./internals/scripts/fetch-lnd-for-packaging.js",
     "flow": "flow",
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
+    "i18next": "i18next --config i18next-parser.config.js",
     "lint-base": "eslint --cache --format=node_modules/eslint-formatter-pretty",
     "lint": "npm run lint-base -- .",
     "lint-fix-base": "npm run lint-base -- --fix",
