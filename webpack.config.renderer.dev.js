@@ -71,6 +71,14 @@ export default merge.smart(baseConfig, {
         }
       },
       {
+        test: /locales/,
+        loader: '@alienfast/i18next-loader',
+        options: { basenameAsNamespace: true }
+        // loader: 'i18next-resource-store-loader'
+        // options here
+        // query: { include: ['**dest/**/*.json'] }
+      },
+      {
         test: /\.global\.css$/,
         use: [
           {

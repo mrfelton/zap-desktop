@@ -3,6 +3,7 @@ import { Provider, connect } from 'react-redux'
 import { ConnectedRouter } from 'react-router-redux'
 import PropTypes from 'prop-types'
 import { hot } from 'react-hot-loader'
+import { I18nextProvider } from 'react-i18next'
 
 import {
   setConnectionType,
@@ -33,6 +34,7 @@ import { walletAddress } from 'reducers/address'
 import LoadingBolt from 'components/LoadingBolt'
 import Onboarding from 'components/Onboarding'
 import Syncing from 'components/Onboarding/Syncing'
+import i18n from '../i18n'
 import Routes from '../routes'
 
 const mapDispatchToProps = {
@@ -231,11 +233,13 @@ const Root = ({
   }
 
   return (
-    <Provider store={store}>
-      <ConnectedRouter history={history}>
-        <Routes />
-      </ConnectedRouter>
-    </Provider>
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <Routes />
+        </ConnectedRouter>
+      </Provider>
+    </I18nextProvider>
   )
 }
 

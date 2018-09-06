@@ -192,6 +192,7 @@
     }
   },
   "devDependencies": {
+    "@alienfast/i18next-loader": "^1.0.16",
     "@commitlint/cli": "^7.1.1",
     "@commitlint/config-conventional": "^7.1.1",
     "add-asset-html-webpack-plugin": "^2.1.3",
@@ -251,6 +252,7 @@
     "html-webpack-plugin": "^3.2.0",
     "http-proxy-middleware": "^0.18.0",
     "husky": "^1.0.0-rc.9",
+    "i18next-parser": "^1.0.0-beta27",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^23.5.0",
     "jsdom": "^11.12.0",
@@ -292,6 +294,8 @@
     "electron-store": "^2.0.0",
     "font-awesome": "^4.7.0",
     "history": "^4.7.2",
+    "i18next": "^11.7.0",
+    "i18next-electron-language-detector": "^0.0.10",
     "javascript-state-machine": "^3.1.0",
     "lodash.get": "^4.4.2",
     "lodash.pick": "^4.4.0",
@@ -302,6 +306,7 @@
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-hot-loader": "^4.3.4",
+    "react-i18next": "^7.11.1",
     "react-inlinesvg": "^0.8.1",
     "react-modal": "^3.5.1",
     "react-moment": "^0.7.9",
