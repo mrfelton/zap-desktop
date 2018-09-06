@@ -9,10 +9,13 @@ import { showNotification } from 'lib/utils/notifications'
 import styles from './Syncing.scss'
 
 class Syncing extends Component {
-  state = {
-    timer: null,
-    syncMessageDetail: null,
-    syncMessageExtraDetail: null
+  constructor(props) {
+    super(props)
+    this.state = {
+      timer: null,
+      syncMessageDetail: null,
+      syncMessageExtraDetail: null
+    }
   }
 
   componentWillMount() {

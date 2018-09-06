@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { translate } from 'react-i18next'
 import styles from './BtcPayServer.scss'
 
 const BtcPayServer = ({
+  t,
   connectionString,
   connectionStringIsValid,
   setConnectionString,
@@ -35,7 +37,7 @@ const BtcPayServer = ({
           connectionString && !connectionStringIsValid ? styles.visible : undefined
         }`}
       >
-        Invalid connection string.
+        {t('btcpay_error')}
       </p>
       <p
         className={`${styles.errorMessage} ${
@@ -49,10 +51,11 @@ const BtcPayServer = ({
 )
 
 BtcPayServer.propTypes = {
+  t: PropTypes.func.isRequired,
   connectionString: PropTypes.string.isRequired,
   connectionStringIsValid: PropTypes.bool.isRequired,
   setConnectionString: PropTypes.func.isRequired,
   startLndHostError: PropTypes.string
 }
 
-export default BtcPayServer
+export default translate('onboarding')(BtcPayServer)

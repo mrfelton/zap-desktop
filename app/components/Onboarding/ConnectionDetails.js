@@ -1,8 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { translate } from 'react-i18next'
 import styles from './ConnectionDetails.scss'
 
 const ConnectionDetails = ({
+  t,
   connectionHost,
   connectionCert,
   connectionMacaroon,
@@ -24,9 +26,7 @@ const ConnectionDetails = ({
         value={connectionHost}
         onChange={event => setConnectionHost(event.target.value)}
       />
-      <p className={styles.description}>
-        Hostname and port of the Lnd gRPC interface. Example: localhost:10009
-      </p>
+      <p className={styles.description}>{t('hostname_description')}</p>
       <p className={`${startLndHostError ? styles.visible : undefined} ${styles.errorMessage}`}>
         {startLndHostError}
       </p>
@@ -41,7 +41,7 @@ const ConnectionDetails = ({
         value={connectionCert}
         onChange={event => setConnectionCert(event.target.value)}
       />
-      <p className={styles.description}>Path to the lnd tls cert. Example: /path/to/tls.cert</p>
+      <p className={styles.description}>{t('cert_description')}</p>
       <p className={`${startLndCertError ? styles.visible : undefined} ${styles.errorMessage}`}>
         {startLndCertError}
       </p>
@@ -56,9 +56,7 @@ const ConnectionDetails = ({
         value={connectionMacaroon}
         onChange={event => setConnectionMacaroon(event.target.value)}
       />
-      <p className={styles.description}>
-        Path to the lnd macaroon file. Example: /path/to/admin.macaroon
-      </p>
+      <p className={styles.description}>{t('macaroon_description')}</p>
       <p className={`${startLndMacaroonError ? styles.visible : undefined} ${styles.errorMessage}`}>
         {startLndMacaroonError}
       </p>
@@ -67,6 +65,7 @@ const ConnectionDetails = ({
 )
 
 ConnectionDetails.propTypes = {
+  t: PropTypes.func.isRequired,
   connectionHost: PropTypes.string.isRequired,
   connectionCert: PropTypes.string.isRequired,
   connectionMacaroon: PropTypes.string.isRequired,
@@ -78,4 +77,4 @@ ConnectionDetails.propTypes = {
   startLndMacaroonError: PropTypes.string
 }
 
-export default ConnectionDetails
+export default translate('onboarding')(ConnectionDetails)

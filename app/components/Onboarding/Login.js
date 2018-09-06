@@ -1,8 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { translate } from 'react-i18next'
 import styles from './Login.scss'
 
-const Login = ({ password, updatePassword, unlockingWallet, unlockWallet, unlockWalletError }) => (
+const Login = ({
+  t,
+  password,
+  updatePassword,
+  unlockingWallet,
+  unlockWallet,
+  unlockWalletError
+}) => (
   <div className={styles.container}>
     <input
       type="password"
@@ -27,7 +35,7 @@ const Login = ({ password, updatePassword, unlockingWallet, unlockWallet, unlock
           className={`${!unlockingWallet ? styles.active : undefined} ${styles.button}`}
           onClick={() => unlockWallet(password)}
         >
-          {unlockingWallet ? <i className={styles.spinner} /> : 'Unlock'}
+          {unlockingWallet ? <i className={styles.spinner} /> : t('unlock')}
         </span>
       </div>
     </section>
@@ -35,6 +43,7 @@ const Login = ({ password, updatePassword, unlockingWallet, unlockWallet, unlock
 )
 
 Login.propTypes = {
+  t: PropTypes.func.isRequired,
   password: PropTypes.string.isRequired,
   updatePassword: PropTypes.func.isRequired,
   unlockingWallet: PropTypes.bool.isRequired,
@@ -42,4 +51,4 @@ Login.propTypes = {
   unlockWalletError: PropTypes.object.isRequired
 }
 
-export default Login
+export default translate('onboarding')(Login)

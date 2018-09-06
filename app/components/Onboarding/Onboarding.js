@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { translate } from 'react-i18next'
 
 import LoadingBolt from 'components/LoadingBolt'
 
@@ -19,6 +20,7 @@ import NewWalletPassword from './NewWalletPassword'
 import styles from './Onboarding.scss'
 
 const Onboarding = ({
+  t,
   onboarding: {
     step,
     previousStep,
@@ -54,12 +56,8 @@ const Onboarding = ({
       case 0.1:
         return (
           <FormContainer
-            title="How do you want to connect to the Lightning Network?"
-            description="
-              By default Zap will spin up a node for you and handle all the nerdy stuff
-              in the background. However you can also setup a custom node connection and
-              use Zap to control a remote node if you desire (for advanced users).
-            "
+            title={t('connection_title')}
+            description={t('connection_description')}
             back={null}
             next={() => {
               switch (connectionType) {
@@ -139,8 +137,8 @@ const Onboarding = ({
       case 1:
         return (
           <FormContainer
-            title="What should we call you?"
-            description="Set your nickname to help others connect with you on the Lightning Network"
+            title={t('alias_title')}
+            description={t('alias_description')}
             back={() => changeStep(0.1)}
             next={() => changeStep(2)}
           >
@@ -150,8 +148,8 @@ const Onboarding = ({
       case 2:
         return (
           <FormContainer
-            title="Autopilot"
-            description="Autopilot is an automatic network manager. Instead of manually adding people to build your network to make payments, enable autopilot to automatically connect you to the Lightning Network using 60% of your balance." // eslint-disable-line max-len
+            title={t('autopilot_title')}
+            description={t('autopilot_description')}
             back={() => changeStep(1)}
             next={() => startLnd({ type: connectionType, alias, autopilot })}
           >
@@ -168,7 +166,12 @@ const Onboarding = ({
         }
         message += '. Please enter your wallet password to unlock it.'
         return (
-          <FormContainer title="Welcome back!" description={`${message}`} back={null} next={null}>
+          <FormContainer
+            title={t('login_title')}
+            description={`${message}`}
+            back={null}
+            next={null}
+          >
             <Login {...initWalletProps.loginProps} />
           </FormContainer>
         )
@@ -199,8 +202,8 @@ const Onboarding = ({
       case 5:
         return (
           <FormContainer
-            title={"Alright, let's get set up"}
-            description="Would you like to create a new wallet or import an existing one?"
+            title={t('signup_title')}
+            description={t('signup_description')}
             back={() => changeStep(4)}
             next={() => {
               // require the user to select create wallet or import wallet
@@ -220,8 +223,8 @@ const Onboarding = ({
       case 5.1:
         return (
           <FormContainer
-            title="Import your seed"
-            description="Recovering a wallet, nice. You don't need anyone else, you got yourself :)"
+            title={t('import_title')}
+            description={t('import_description')}
             back={() => changeStep(5)}
             next={() => {
               const recoverySeed = recoverFormProps.recoverSeedInput.map(input => input.word)
@@ -235,8 +238,8 @@ const Onboarding = ({
       case 6:
         return (
           <FormContainer
-            title="Save your wallet seed"
-            description="Please save these 24 words securely! This will allow you to recover your wallet in the future"
+            title={t('save_seed_title')}
+            description={t('save_seed_description')}
             back={() => changeStep(5)}
             next={() => changeStep(7)}
           >
@@ -246,11 +249,10 @@ const Onboarding = ({
       case 7:
         return (
           <FormContainer
-            title="Retype your seed"
-            description={`Your seed is important! If you lose your seed you'll have no way to recover your wallet.
-            To make sure that you have properly saved your seed, please retype words ${
-              reEnterSeedProps.seedIndexesArr[0]
-            }, ${reEnterSeedProps.seedIndexesArr[1]} and ${reEnterSeedProps.seedIndexesArr[2]}`}
+            title={t('retype_seed_title')}
+            description={`${t('retype_seed_description')} ${reEnterSeedProps.seedIndexesArr[0]}, ${
+              reEnterSeedProps.seedIndexesArr[1]
+            } and ${reEnterSeedProps.seedIndexesArr[2]}`}
             back={() => changeStep(6)}
             next={() => {
               // don't allow them to move on if they havent re-entered the seed correctly
@@ -280,6 +282,7 @@ const Onboarding = ({
 }
 
 Onboarding.propTypes = {
+  t: PropTypes.func.isRequired,
   onboarding: PropTypes.object.isRequired,
   connectionTypeProps: PropTypes.object.isRequired,
   connectionDetailProps: PropTypes.object.isRequired,
@@ -297,4 +300,4 @@ Onboarding.propTypes = {
   recoverOldWallet: PropTypes.func.isRequired
 }
 
-export default Onboarding
+export default translate('onboarding')(Onboarding)

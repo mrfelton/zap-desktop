@@ -2,9 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import FaCircle from 'react-icons/lib/fa/circle'
 import FaCircleThin from 'react-icons/lib/fa/circle-thin'
+import { translate } from 'react-i18next'
 import styles from './ConnectionType.scss'
 
-const ConnectionType = ({ connectionType, setConnectionType }) => (
+const ConnectionType = ({ connectionType, setConnectionType, t }) => (
   <div className={styles.container}>
     <section
       className={`${styles.option} ${connectionType === 'local' ? styles.active : undefined}`}
@@ -12,11 +13,11 @@ const ConnectionType = ({ connectionType, setConnectionType }) => (
       <div className={`${styles.button}`} onClick={() => setConnectionType('local')}>
         {connectionType === 'local' ? <FaCircle /> : <FaCircleThin />}
         <span className={styles.label}>
-          Default <span className={styles.superscript}>testnet</span>
+          {t('default')} <span className={styles.superscript}>testnet</span>
         </span>
       </div>
       <div className={`${styles.description}`}>
-        By selecting the defualt mode we will do everything for you. Just click and go!
+        {t('default_description')}
         <br />
         (testnet only)
       </div>
@@ -26,28 +27,24 @@ const ConnectionType = ({ connectionType, setConnectionType }) => (
     >
       <div className={`${styles.button}`} onClick={() => setConnectionType('custom')}>
         {connectionType === 'custom' ? <FaCircle /> : <FaCircleThin />}
-        <span className={styles.label}>Custom</span>
+        <span className={styles.label}>{t('custom')}</span>
       </div>
-      <div className={`${styles.description}`}>
-        Connect to your own node. You will need to provide your own connection settings so this is
-        for advanced users only.
-      </div>
+      <div className={`${styles.description}`}>{t('custom_description')}</div>
     </section>
     <section className={`${styles.option} ${connectionType === 'btcpayserver' && styles.active}`}>
       <div className={`${styles.button}`} onClick={() => setConnectionType('btcpayserver')}>
         {connectionType === 'btcpayserver' ? <FaCircle /> : <FaCircleThin />}
         <span className={styles.label}>BTCPay Server</span>
       </div>
-      <div className={`${styles.description}`}>
-        Connect to your own BTCPay Server instance to access your BTCPay Server wallet.
-      </div>
+      <div className={`${styles.description}`}>{t('btcpayserver_description')}</div>
     </section>
   </div>
 )
 
 ConnectionType.propTypes = {
   connectionType: PropTypes.string.isRequired,
-  setConnectionType: PropTypes.func.isRequired
+  setConnectionType: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired
 }
 
-export default ConnectionType
+export default translate('onboarding')(ConnectionType)

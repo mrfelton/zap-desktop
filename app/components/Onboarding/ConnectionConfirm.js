@@ -1,21 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { translate } from 'react-i18next'
 import styles from './ConnectionConfirm.scss'
 
-const ConnectionConfirm = ({ connectionHost }) => (
+const ConnectionConfirm = ({ t, connectionHost }) => (
   <div className={styles.container}>
     <p>
-      Are you sure you want to connect to{' '}
+      {t('verify_host_title')}
       <span className={styles.host}>{connectionHost.split(':')[0]}</span>?{' '}
     </p>
     <p>
-      <strong>Please check the hostname carefully.</strong>
+      <strong>{t('verify_host_description')}</strong>
     </p>
   </div>
 )
 
 ConnectionConfirm.propTypes = {
+  t: PropTypes.func.isRequired,
   connectionHost: PropTypes.string.isRequired
 }
 
-export default ConnectionConfirm
+export default translate('onboarding')(ConnectionConfirm)

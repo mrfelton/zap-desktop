@@ -2,6 +2,7 @@ import { shell } from 'electron'
 import React from 'react'
 import PropTypes from 'prop-types'
 import Isvg from 'react-inlinesvg'
+import { translate } from 'react-i18next'
 
 import FaAngleLeft from 'react-icons/lib/fa/angle-left'
 import FaAngleRight from 'react-icons/lib/fa/angle-right'
@@ -9,7 +10,7 @@ import FaAngleRight from 'react-icons/lib/fa/angle-right'
 import zapLogo from 'icons/zap_logo.svg'
 import styles from './FormContainer.scss'
 
-const FormContainer = ({ title, description, back, next, children }) => (
+const FormContainer = ({ t, title, description, back, next, children }) => (
   <div className={styles.container}>
     <div className={styles.titleBar} />
 
@@ -24,7 +25,7 @@ const FormContainer = ({ title, description, back, next, children }) => (
             shell.openExternal('https://ln-zap.github.io/zap-tutorials/zap-desktop-getting-started')
           }
         >
-          Need help?
+          {t('help')}
         </div>
       </section>
     </header>
@@ -41,14 +42,14 @@ const FormContainer = ({ title, description, back, next, children }) => (
         <section>
           {back && (
             <div onClick={back} className={styles.backButton}>
-              <FaAngleLeft style={{ verticalAlign: 'top' }} /> Back
+              <FaAngleLeft style={{ verticalAlign: 'top' }} /> {t('back')}
             </div>
           )}
         </section>
         <section>
           {next && (
             <div onClick={next} className={styles.nextButton}>
-              Next <FaAngleRight style={{ verticalAlign: 'top' }} />
+              {t('next')} <FaAngleRight style={{ verticalAlign: 'top' }} />
             </div>
           )}
         </section>
@@ -58,6 +59,7 @@ const FormContainer = ({ title, description, back, next, children }) => (
 )
 
 FormContainer.propTypes = {
+  t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
 
@@ -67,4 +69,4 @@ FormContainer.propTypes = {
   children: PropTypes.object.isRequired
 }
 
-export default FormContainer
+export default translate('onboarding')(FormContainer)
