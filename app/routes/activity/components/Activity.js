@@ -4,6 +4,7 @@ import Isvg from 'react-inlinesvg'
 import searchIcon from 'icons/search.svg'
 import xIcon from 'icons/x.svg'
 import FaRepeat from 'react-icons/lib/fa/repeat'
+import { translate } from 'react-i18next'
 
 import Wallet from 'components/Wallet'
 import LoadingBolt from 'components/LoadingBolt'
@@ -73,6 +74,7 @@ class Activity extends Component {
 
   render() {
     const {
+      t,
       balance,
       activity: { filters, filter, filterPulldown, searchActive, searchText, showExpiredRequests },
       changeFilter,
@@ -176,7 +178,7 @@ class Activity extends Component {
                         this.repeat = ref
                       }}
                     >
-                      {refreshing ? <FaRepeat /> : 'Refresh'}
+                      {refreshing ? <FaRepeat /> : t('refresh')}
                     </span>
                   </li>
                   <li className={styles.activeFilter} onClick={() => updateSearchActive(true)}>
@@ -216,6 +218,7 @@ class Activity extends Component {
 }
 
 Activity.propTypes = {
+  t: PropTypes.func.isRequired,
   fetchPayments: PropTypes.func.isRequired,
   fetchInvoices: PropTypes.func.isRequired,
   fetchTransactions: PropTypes.func.isRequired,
@@ -240,4 +243,4 @@ Activity.propTypes = {
   currencyName: PropTypes.string.isRequired
 }
 
-export default Activity
+export default translate('activity')(Activity)
