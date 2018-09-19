@@ -1,7 +1,8 @@
 os: unstable
 
 environment:
-  DEBUG: electron-builder
+  DEBUG: electron-builder,zap*
+  DEBUG_LEVEL: debug
   NODE_ENV: test
   matrix:
     - nodejs_version: STABLE

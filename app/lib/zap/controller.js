@@ -107,10 +107,20 @@ class ZapController {
 
     // When the window is closed, just hide it unless we are force closing.
     this.mainWindow.on('close', e => {
+      mainLog.debug('mainWindow close')
       if (process.platform === 'darwin' && !this.mainWindow.forceClose) {
         e.preventDefault()
         this.mainWindow.hide()
       }
+    })
+
+    // When the window is closed, just hide it unless we are force closing.
+    this.mainWindow.on('closed', e => {
+      mainLog.debug('mainWindow closed', e)
+      // Dereference the window object, usually you would store windows
+      // in an array if your app supports multi windows, this is the time
+      // when you should delete the corresponding element.
+      this.mainWindow = null
     })
   }
 

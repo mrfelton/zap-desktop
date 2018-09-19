@@ -4,9 +4,8 @@ language: node_js
 
 env:
   global:
-    - DEBUG=electron-builder
-    - NODE_ENV=test
-
+    - DEBUG=electron-builder,zap*
+    - DEBUG_LEVEL=debug
 os:
   - linux
   - osx
