@@ -26,6 +26,10 @@ clone_depth: 1
 
 skip_branch_with_pr: true
 
+artifacts:
+  - path: chromeDriverLog.txt
+    name: Chromedriver logs
+
 install:
   - ps: Install-Product node $env:nodejs_version
   - set CI=true

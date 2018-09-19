@@ -9,7 +9,8 @@ describe('main window', function spec() {
   beforeEach(() => {
     this.app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..', '..', 'app')]
+      args: [path.join(__dirname, '..', '..', 'app')],
+      chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt')
     })
 
     return this.app.start()
