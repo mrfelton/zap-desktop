@@ -16,7 +16,7 @@ describe('main window', function spec() {
       chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt'),
       // startTimeout: 10000,
       // waitTimeout: 10000,
-      // quitTimeout: 20000,
+      quitTimeout: 20000,
       env: {
         NODE_ENV: 'test'
       }
