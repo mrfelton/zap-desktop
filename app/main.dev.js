@@ -7,6 +7,10 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import { app, BrowserWindow, session } from 'electron'
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+  REDUX_DEVTOOLS
+} from 'electron-devtools-installer'
 import { mainLog } from './lib/utils/log'
 import ZapMenuBuilder from './lib/zap/menuBuilder'
 import ZapController from './lib/zap/controller'
@@ -54,6 +58,23 @@ app.on('ready', () => {
   }
 
   /**
+   * In development mode or when DEBUG_PROD is set, enable debugging tools.
+   */
+  if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then(name => mainLog.debug(`Added Extension: ${name}`))
+      .catch(err => mainLog.warn(`An error occurred when installing REACT_DEVELOPER_TOOLS: ${err}`))
+
+    installExtension(REDUX_DEVTOOLS)
+      .then(name => mainLog.debug(`Added Extension: ${name}`))
+      .catch(err => mainLog.warn(`An error occurred when installing REDUX_DEVTOOLS: ${err}`))
+
+    zap.mainWindow.webContents.once('dom-ready', () => {
+      // zap.mainWindow.openDevTools()
+    })
+  }
+
+  /**
    * Add application event listener:
    *  - Open zap payment form when lightning url is opened
    */
@@ -86,7 +107,6 @@ app.on('ready', () => {
    *  - Stop gRPC and kill lnd process before the app windows are closed and the app quits.
    */
   app.on('before-quit', async event => {
-    mainLog.debug('app before-quit')
     if (zap.state !== 'terminated') {
       event.preventDefault()
       zap.terminate()

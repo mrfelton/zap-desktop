@@ -3,7 +3,7 @@ import electronPath from 'electron'
 import path from 'path'
 import { mainLog } from 'lib/utils/log'
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 jest.unmock('electron')
 
 const appPath = path.join(__dirname, '..', '..', 'app')
@@ -17,7 +17,7 @@ describe('main window', function spec() {
       chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt'),
       // startTimeout: 10000,
       // waitTimeout: 10000,
-      quitTimeout: 10000,
+      // quitTimeout: 10000,
       env: {
         NODE_ENV: 'test'
       }
@@ -32,8 +32,6 @@ describe('main window', function spec() {
     if (this.app && this.app.isRunning()) {
       mainLog.debug('stopping...')
       await this.app.stop()
-
-      // exec(`pkill -f "${appPath}"`)
       mainLog.debug('stopped.')
     }
   })
@@ -60,6 +58,6 @@ describe('main window', function spec() {
     mainLog.debug('got logs', logs)
     const logs2 = await client.getMainProcessLogs()
     mainLog.debug('got logs', logs2)
-    // expect(logs).toHaveLength(0)
+    expect(logs).toHaveLength(0)
   })
 })

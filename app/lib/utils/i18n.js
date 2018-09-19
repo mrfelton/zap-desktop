@@ -183,7 +183,7 @@ export const getLanguageName = lang => {
   const language = lang.toLowerCase().split(/[_-]+/)[0]
   const data = lookup.languages({ alpha2: language })
   const name = get(data, '[0]name', language)
-  debug('Determined language as %s', name)
+  debug('Determined language name for %s as %s', lang, name)
   return name
 }
 
