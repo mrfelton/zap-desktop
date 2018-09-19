@@ -34,6 +34,9 @@ describe('main window', function spec() {
     await client.waitUntilWindowLoaded()
     const title = await browserWindow.getTitle()
     expect(title).toBe('Zap')
+
+    const windowCount = await client.getWindowCount()
+    expect(windowCount).toBe('1')
   })
 
   it("should haven't any logs in console of main window", async () => {
