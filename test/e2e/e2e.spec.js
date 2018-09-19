@@ -2,7 +2,7 @@ import { Application } from 'spectron'
 import electronPath from 'electron'
 import path from 'path'
 
-jest.setTimeout(10000)
+jest.setTimeout(30000)
 jest.unmock('electron')
 
 describe('main window', function spec() {
