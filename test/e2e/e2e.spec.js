@@ -10,7 +10,13 @@ describe('main window', function spec() {
     this.app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..', '..', 'app')],
-      chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt')
+      chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt'),
+      startTimeout: 10000,
+      waitTimeout: 10000,
+      quitTimeout: 10000,
+      env: {
+        NODE_ENV: 'test'
+      }
     })
 
     return this.app.start()
