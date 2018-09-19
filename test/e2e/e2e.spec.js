@@ -2,48 +2,63 @@ import { Application } from 'spectron'
 import electronPath from 'electron'
 import path from 'path'
 
-jest.setTimeout(30000)
+jest.setTimeout(20000)
 jest.unmock('electron')
 
+const appPath = path.join(__dirname, '..', '..', 'app')
+
 describe('main window', function spec() {
-  beforeEach(() => {
+  beforeAll(async () => {
+    console.log('before')
     this.app = new Application({
       path: electronPath,
-      args: [path.join(__dirname, '..', '..', 'app')],
+      args: [appPath],
       chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt'),
-      startTimeout: 10000,
-      waitTimeout: 10000,
-      quitTimeout: 10000,
+      // startTimeout: 10000,
+      // waitTimeout: 10000,
+      // quitTimeout: 20000,
       env: {
         NODE_ENV: 'test'
       }
     })
 
-    return this.app.start()
+    await this.app.start()
+    await this.app.client.waitUntilWindowLoaded()
   })
 
-  afterEach(() => {
+  afterAll(async () => {
+    console.log('after...')
     if (this.app && this.app.isRunning()) {
-      return this.app.stop()
+      console.log('stopping...')
+      await this.app.stop()
+
+      exec(`pkill -f "${appPath}"`)
+      console.log('stopped.')
     }
   })
 
   it('should open window', async () => {
+    console.log('test1')
     const { client, browserWindow } = this.app
 
-    await client.waitUntilWindowLoaded()
+    console.log('loaded')
     const title = await browserWindow.getTitle()
+    console.log('got title')
     expect(title).toBe('Zap')
 
     const windowCount = await client.getWindowCount()
-    expect(windowCount).toBe('1')
+    expect(windowCount).toBe(1)
   })
 
   it("should haven't any logs in console of main window", async () => {
+    console.log('test2')
     const { client } = this.app
 
-    await client.waitUntilWindowLoaded()
+    console.log('loaded')
     const logs = await client.getRenderProcessLogs()
+    console.log('got logs', logs)
+    const logs2 = await client.getMainProcessLogs()
+    console.log('got logs', logs2)
     expect(logs).toHaveLength(0)
   })
 })
