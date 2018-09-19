@@ -53,25 +53,6 @@ app.on('ready', () => {
     sourceMapSupport.install()
   }
 
-  // /**
-  //  * In development mode or when DEBUG_PROD is set, enable debugging tools.
-  //  */
-  // if (process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true') {
-  //   // eslint-disable global-require
-  //   require('electron-debug')()
-  //   const installer = require('electron-devtools-installer')
-  //   const forceDownload = !!process.env.UPGRADE_EXTENSIONS
-  //   const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS']
-  //
-  //   Promise.all(extensions.map(name => installer.default(installer[name], forceDownload))).catch(
-  //     mainLog.error
-  //   )
-  //
-  //   zap.mainWindow.webContents.once('dom-ready', () => {
-  //     zap.mainWindow.openDevTools()
-  //   })
-  // }
-
   /**
    * Add application event listener:
    *  - Open zap payment form when lightning url is opened
