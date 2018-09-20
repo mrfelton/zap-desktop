@@ -3,7 +3,7 @@ import electronPath from 'electron'
 import path from 'path'
 import { mainLog } from 'lib/utils/log'
 
-jest.setTimeout(15000)
+jest.setTimeout(20000)
 jest.unmock('electron')
 
 const appPath = path.join(__dirname, '..', '..', 'app')
@@ -15,8 +15,8 @@ describe('main window', function spec() {
       path: electronPath,
       args: [appPath],
       chromeDriverLogPath: path.join(__dirname, '..', '..', 'chromeDriverLog.txt'),
-      startTimeout: 10000,
-      waitTimeout: 10000,
+      // startTimeout: 10000,
+      // waitTimeout: 10000,
       // quitTimeout: 10000,
       env: {
         NODE_ENV: 'test'
