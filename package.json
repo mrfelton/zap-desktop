@@ -4,6 +4,7 @@
   "version": "0.2.2-beta",
   "description": "desktop application for the lightning network",
   "scripts": {
+    "bootstrap:docs": "yarn --cwd docs",
     "build": "concurrently --raw \"npm:build-main\" \"npm:build-renderer\"",
     "build-dll": "webpack --require babel-register --config internals/webpack/webpack.config.renderer.dev.dll.js --progress",
     "build-main": "webpack --require babel-register  --config internals/webpack/webpack.config.main.prod.js --progress",
@@ -13,6 +14,12 @@
     "coverage": "open coverage/index.html",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "dev": "cross-env START_HOT=1 npm run start-renderer-dev",
+    "docs:build": "npm --prefix docs run build",
+    "predocs:deploy": "npm run storybook:build && npm run docs:build",
+    "docs:deploy": "npm --prefix docs run deploy:manual",
+    "predocs:deploy:ci": "npm run storybook:build && npm run docs:build",
+    "docs:deploy:ci": "npm --prefix docs run deploy:ci",
+    "docs:dev": "npm --prefix docs run develop",
     "extract-messages": "extract-messages -l=en -o app/translations -d en --flat true 'app/**/messages.js'",
     "fetch-lnd": "node ./internals/scripts/fetch-lnd-for-packaging.js",
     "flow": "flow",
@@ -40,7 +47,7 @@
     "test-e2e": "npm run test-base -- ./test/e2e",
     "test-ci": "npm run test-e2e && npm run test-unit",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "storybook:build": "build-storybook -o docs/static/storybook"
   },
   "config": {
     "style_paths": "app/**/*.scss app/**/*.js",
@@ -161,7 +168,7 @@
     "hot",
     "reload"
   ],
-  "homepage": "https://github.com/LN-Zap/zap-desktop#readme",
+  "homepage": "http://LN-Zap.github.io/zap-desktop",
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.js",
