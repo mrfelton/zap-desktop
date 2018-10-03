@@ -38,7 +38,9 @@
     "test-base": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=true ELECTRON_DISABLE_SECURITY_WARNINGS=true node --trace-warnings ./node_modules/jest/bin/jest --maxWorkers=2 --forceExit",
     "test-unit": "npm run test-base -- --coverage ./test/unit",
     "test-e2e": "npm run test-base -- ./test/e2e",
-    "test-ci": "npm run test-e2e && npm run test-unit"
+    "test-ci": "npm run test-e2e && npm run test-unit",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "config": {
     "style_paths": "app/**/*.scss app/**/*.js",
@@ -196,6 +198,14 @@
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
+    "@storybook/addon-actions": "^4.0.0-alpha.23",
+    "@storybook/addon-backgrounds": "^4.0.0-alpha.23",
+    "@storybook/addon-info": "^4.0.0-alpha.23",
+    "@storybook/addon-options": "^4.0.0-alpha.23",
+    "@storybook/addon-storysource": "^4.0.0-alpha.23",
+    "@storybook/addons": "^4.0.0-alpha.23",
+    "@storybook/components": "^4.0.0-alpha.23",
+    "@storybook/react": "^4.0.0-alpha.23",
     "add-asset-html-webpack-plugin": "^3.0.1",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
@@ -273,6 +283,7 @@
     "rimraf": "^2.6.2",
     "sass-loader": "^7.1.0",
     "spectron": "^4.0.0",
+    "storybook-addon-styled-component-theme": "^1.0.5",
     "style-loader": "^0.23.0",
     "stylelint": "^9.6.0",
     "stylelint-config-recommended-scss": "^3.2.0",
