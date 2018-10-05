@@ -73,7 +73,7 @@
   "settings": {
     "import/resolver": {
       "node": {
-        "moduleDirectory": ["app", "app/node_modules", "node_modules"]
+        "moduleDirectory": ["app", "node_modules", "app/node_modules"]
       },
       "webpack": {
         "config": "internals/webpack/webpack.config.eslint.js"
