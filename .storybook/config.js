@@ -26,7 +26,12 @@ addDecorator(
 )
 
 // Router
-addDecorator(StoryRouter({}))
+addDecorator(
+  StoryRouter({
+    '/wallets/:walletId': linkTo('Pages', 'Home'),
+    '/wallets/:walletId/unlock': linkTo('Pages', 'WalletUnlocker')
+  })
+)
 
 // Chapters
 setAddon(chaptersAddon)
