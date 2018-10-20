@@ -5,7 +5,7 @@ import FaAngleDown from 'react-icons/lib/fa/angle-down'
 import FaExclamationCircle from 'react-icons/lib/fa/exclamation-circle'
 
 import AmountInput from 'components/AmountInput'
-import Button from 'components/UI/Button'
+import { Button } from 'components/UI'
 
 import { FormattedNumber, FormattedMessage } from 'react-intl'
 import messages from './messages'

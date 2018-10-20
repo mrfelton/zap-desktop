@@ -6,7 +6,7 @@ import FaAngleDown from 'react-icons/lib/fa/angle-down'
 import { btc, blockExplorer } from 'lib/utils'
 import Value from 'components/Value'
 import Settings from 'components/Settings'
-import Button from 'components/UI/Button'
+import { Button } from 'components/UI'
 
 import CheckAnimated from 'components/Icon/CheckAnimated'
 import ZapLogo from 'components/Icon/ZapLogo'

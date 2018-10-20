@@ -1,3 +1,4 @@
+import React from 'react'
 import { addDecorator, configure, setAddon } from '@storybook/react'
 import { withThemesProvider } from 'storybook-addon-styled-component-theme'
 import { themes } from '@storybook/components'
@@ -8,9 +9,7 @@ import { linkTo } from '@storybook/addon-links'
 import chaptersAddon from 'react-storybook-addon-chapters'
 import StoryRouter from 'storybook-react-router'
 import { dark, light } from 'themes'
-
-import React from 'react'
-import GlobalStyle from 'components/UI/GlobalStyle'
+import { GlobalStyle } from 'components/UI'
 
 // Info
 addDecorator(

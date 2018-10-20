@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Transition, animated } from 'react-spring'
 import errorToUserFriendly from 'lib/utils/userFriendlyErrors'
-import Notification from 'components/UI/Notification'
+import { Notification } from 'components/UI'
 import { Box } from 'rebass'
 
 class GlobalError extends React.Component {

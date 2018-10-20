@@ -7,7 +7,7 @@ import FaAngleDown from 'react-icons/lib/fa/angle-down'
 
 import { btc } from 'lib/utils'
 import AmountInput from 'components/AmountInput'
-import Button from 'components/UI/Button'
+import { Button } from 'components/UI'
 
 import { FormattedNumber, FormattedMessage, injectIntl } from 'react-intl'
 import messages from './messages'
