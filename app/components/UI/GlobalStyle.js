@@ -9,13 +9,11 @@ const GlobalStyle = createGlobalStyle`
   }
   body {
     position: relative;
-    box-sizing: border-box;
     overflow-y: hidden;
-    margin: 0;
-    padding: 0;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     font-family: 'Roboto', Arial, Helvetica, sans-serif;
+    font-size: 13px;
   }
 `
 
