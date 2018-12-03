@@ -1,7 +1,7 @@
 {
   "name": "zap-desktop",
   "productName": "ZapDesktop",
-  "version": "0.2.3-beta",
+  "version": "0.2.3-beta.rc1",
   "description": "desktop application for the lightning network",
   "scripts": {
     "build": "concurrently --raw \"npm:build-main\" \"npm:build-renderer\"",
@@ -151,14 +151,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LN-Zap/zap-desktop"
+    "url": "git+https://github.com/mrfelton/zap-desktop"
   },
   "author": "Jack Mallers <jimmymowschess@gmail.com> (https://github.com/jackmallers)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/LN-Zap/zap-desktop/issues"
+    "url": "https://github.com/mrfelton/zap-desktop/issues"
   },
-  "homepage": "https://github.com/LN-Zap/zap-desktop#readme",
+  "homepage": "https://github.com/mrfelton/zap-desktop#readme",
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.js",
