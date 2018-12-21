@@ -79,6 +79,18 @@ app.on('ready', async () => {
     }
   })
 
+  // Initialise the updater.
+  updater = new ZapUpdater(mainWindow)
+  updater.init()
+
+  // Initialise the application.
+  zap = new ZapController(mainWindow)
+  zap.init()
+
+  // Initialise the application menus.
+  menuBuilder = new ZapMenuBuilder(mainWindow)
+  menuBuilder.buildMenu(locale)
+
   // When the window is closed, just hide it unless we are force closing.
   mainWindow.on('close', e => {
     mainLog.trace('mainWindow.close')
@@ -93,19 +105,9 @@ app.on('ready', async () => {
   mainWindow.on('closed', () => {
     mainLog.trace('mainWindow.closed')
     mainWindow = null
+    updater.mainWindow = null
+    menuBuilder.mainWindow = null
   })
-
-  // Initialise the updater.
-  updater = new ZapUpdater(mainWindow)
-  updater.init()
-
-  // Initialise the application.
-  zap = new ZapController(mainWindow)
-  zap.init()
-
-  // Initialise the application menus.
-  menuBuilder = new ZapMenuBuilder(mainWindow)
-  menuBuilder.buildMenu(locale)
 
   /**
    * In production mode, enable source map support.
