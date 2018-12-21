@@ -94,7 +94,7 @@ app.on('ready', async () => {
   // When the window is closed, just hide it unless we are force closing.
   mainWindow.on('close', e => {
     mainLog.trace('mainWindow.close')
-    if (os.platform() === 'darwin' && !mainWindow.forceClose) {
+    if (!mainWindow.forceClose) {
       e.preventDefault()
       mainWindow.hide()
     }
