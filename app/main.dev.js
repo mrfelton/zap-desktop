@@ -94,7 +94,7 @@ app.on('ready', async () => {
   // When the window is closed, just hide it unless we are force closing.
   mainWindow.on('close', e => {
     mainLog.trace('mainWindow.close')
-    if (!mainWindow.forceClose) {
+    if (os.platform() === 'darwin' && !mainWindow.forceClose) {
       e.preventDefault()
       mainWindow.hide()
     }
@@ -173,12 +173,12 @@ app.on('window-all-closed', async () => {
  * Add application event listener:
  *  - Stop gRPC and kill lnd process before the app windows are closed and the app quits.
  */
-app.on('before-quit', async event => {
+app.on('before-quit', async () => {
   mainLog.trace('app.before-quit')
   if (!zap.is('terminated')) {
     mainLog.trace('zap.terminated = false')
-    event.preventDefault()
-    zap.terminate()
+    // event.preventDefault()
+    // zap.terminate()
   } else {
     mainLog.trace('zap.terminated = false')
     if (zap.mainWindow) {
