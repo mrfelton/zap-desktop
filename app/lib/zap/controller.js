@@ -1,5 +1,4 @@
 // @flow
-import os from 'os'
 import { app, ipcMain, dialog, BrowserWindow } from 'electron'
 import pick from 'lodash.pick'
 import StateMachine from 'javascript-state-machine'
@@ -105,20 +104,6 @@ class ZapController {
     this.mainWindow.webContents.on('did-finish-load', () => {
       this.mainWindow.show()
       this.mainWindow.focus()
-    })
-
-    // When the window is closed, just hide it unless we are force closing.
-    this.mainWindow.on('close', e => {
-      if (os.platform() === 'darwin' && !this.mainWindow.forceClose) {
-        e.preventDefault()
-        this.mainWindow.hide()
-      }
-    })
-
-    // Dereference the window object, usually you would store windows in an array if your app supports multi windows,
-    // this is the time when you should delete the corresponding element.
-    this.mainWindow.on('closed', () => {
-      this.mainWindow = null
     })
   }
 

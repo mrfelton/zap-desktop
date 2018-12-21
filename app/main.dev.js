@@ -44,6 +44,7 @@ if (!singleInstanceLock) {
  * Initialize Zap as soon as electron is ready.
  */
 app.on('ready', async () => {
+  mainLog.trace('app.ready')
   mainLog.timeEnd('Time until app is ready')
 
   // Get the users preference so that we can:
@@ -64,7 +65,7 @@ app.on('ready', async () => {
   }
 
   // Create a new browser window.
-  const mainWindow = new BrowserWindow({
+  let mainWindow = new BrowserWindow({
     show: false,
     useContentSize: true,
     titleBarStyle: 'hidden',
@@ -76,6 +77,22 @@ app.on('ready', async () => {
     webPreferences: {
       preload: path.resolve(__dirname, 'preload.js')
     }
+  })
+
+  // When the window is closed, just hide it unless we are force closing.
+  mainWindow.on('close', e => {
+    mainLog.trace('mainWindow.close')
+    if (os.platform() === 'darwin' && !mainWindow.forceClose) {
+      e.preventDefault()
+      mainWindow.hide()
+    }
+  })
+
+  // Dereference the window object, usually you would store windows in an array if your app supports multi windows,
+  // this is the time when you should delete the corresponding element.
+  mainWindow.on('closed', () => {
+    mainLog.trace('mainWindow.closed')
+    mainWindow = null
   })
 
   // Initialise the updater.
@@ -114,6 +131,21 @@ app.on('ready', async () => {
       zap.mainWindow.openDevTools()
     })
   }
+
+  // HACK: patch webrequest to fix devtools incompatibility with electron 2.x.
+  // See https://github.com/electron/electron/issues/13008#issuecomment-400261941
+  session.defaultSession.webRequest.onBeforeRequest({}, (details, callback) => {
+    if (details.url.indexOf('7accc8730b0f99b5e7c0702ea89d1fa7c17bfe33') !== -1) {
+      callback({
+        redirectURL: details.url.replace(
+          '7accc8730b0f99b5e7c0702ea89d1fa7c17bfe33',
+          '57c9d07b416b5a2ea23d28247300e4af36329bdc'
+        )
+      })
+    } else {
+      callback({ cancel: false })
+    }
+  })
 })
 
 app.on('open-url', (event, input) => {
@@ -126,6 +158,7 @@ app.on('open-url', (event, input) => {
  *  - Stop gRPC and kill lnd process before the app windows are closed and the app quits.
  */
 app.on('before-quit', async event => {
+  mainLog.trace('app.before-quit')
   if (!zap.is('terminated')) {
     event.preventDefault()
     zap.terminate()
@@ -140,6 +173,7 @@ app.on('before-quit', async event => {
  * On OS X it's common to re-open a window in the app when the dock icon is clicked.
  */
 app.on('activate', () => {
+  mainLog.trace('app.activate')
   zap.mainWindow.show()
 })
 
@@ -147,6 +181,7 @@ app.on('activate', () => {
  * Someone tried to run a second instance, we should focus our window.
  */
 app.on('second-instance', (event, commandLine) => {
+  mainLog.trace('app.second-instance')
   if (os.platform !== 'darwin') {
     const protocolUrl = commandLine && commandLine.slice(1)[0]
     if (protocolUrl) {
@@ -173,21 +208,6 @@ app.on('second-instance', (event, commandLine) => {
  */
 app.setAsDefaultProtocolClient('lightning')
 app.setAsDefaultProtocolClient('lndconnect')
-
-// HACK: patch webrequest to fix devtools incompatibility with electron 2.x.
-// See https://github.com/electron/electron/issues/13008#issuecomment-400261941
-session.defaultSession.webRequest.onBeforeRequest({}, (details, callback) => {
-  if (details.url.indexOf('7accc8730b0f99b5e7c0702ea89d1fa7c17bfe33') !== -1) {
-    callback({
-      redirectURL: details.url.replace(
-        '7accc8730b0f99b5e7c0702ea89d1fa7c17bfe33',
-        '57c9d07b416b5a2ea23d28247300e4af36329bdc'
-      )
-    })
-  } else {
-    callback({ cancel: false })
-  }
-})
 
 /**
  * Handler for open-link events.
