@@ -156,6 +156,18 @@ app.on('open-url', (event, input) => {
   handleOpenUrl(input)
 })
 
+app.on('will-quit', async () => {
+  mainLog.trace('app.will-quit')
+})
+
+app.on('quit', async () => {
+  mainLog.trace('app.quit')
+})
+
+app.on('window-all-closed', async () => {
+  mainLog.trace('app.window-all-closed')
+})
+
 /**
  * Add application event listener:
  *  - Stop gRPC and kill lnd process before the app windows are closed and the app quits.
@@ -163,10 +175,13 @@ app.on('open-url', (event, input) => {
 app.on('before-quit', async event => {
   mainLog.trace('app.before-quit')
   if (!zap.is('terminated')) {
+    mainLog.trace('zap.terminated = false')
     event.preventDefault()
     zap.terminate()
   } else {
+    mainLog.trace('zap.terminated = false')
     if (zap.mainWindow) {
+      mainLog.trace('setting forceClose')
       zap.mainWindow.forceClose = true
     }
   }
