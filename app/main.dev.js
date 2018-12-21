@@ -166,6 +166,7 @@ app.on('quit', async () => {
 
 app.on('window-all-closed', async () => {
   mainLog.trace('app.window-all-closed')
+  app.quit()
 })
 
 /**
