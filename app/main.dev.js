@@ -92,12 +92,12 @@ app.on('ready', async () => {
   menuBuilder.buildMenu(locale)
 
   // When the window is closed, just hide it unless we are force closing.
-  mainWindow.on('close', e => {
+  mainWindow.on('close', () => {
     mainLog.trace('mainWindow.close')
-    if (os.platform() === 'darwin' && !mainWindow.forceClose) {
-      e.preventDefault()
-      mainWindow.hide()
-    }
+    // if (os.platform() === 'darwin' && !mainWindow.forceClose) {
+    //   e.preventDefault()
+    //   mainWindow.hide()
+    // }
   })
 
   // Dereference the window object, usually you would store windows in an array if your app supports multi windows,
@@ -156,15 +156,15 @@ app.on('open-url', (event, input) => {
   handleOpenUrl(input)
 })
 
-app.on('will-quit', async () => {
+app.on('will-quit', () => {
   mainLog.trace('app.will-quit')
 })
 
-app.on('quit', async () => {
+app.on('quit', () => {
   mainLog.trace('app.quit')
 })
 
-app.on('window-all-closed', async () => {
+app.on('window-all-closed', () => {
   mainLog.trace('app.window-all-closed')
   app.quit()
 })
@@ -173,12 +173,12 @@ app.on('window-all-closed', async () => {
  * Add application event listener:
  *  - Stop gRPC and kill lnd process before the app windows are closed and the app quits.
  */
-app.on('before-quit', async () => {
+app.on('before-quit', event => {
   mainLog.trace('app.before-quit')
   if (!zap.is('terminated')) {
     mainLog.trace('zap.terminated = false')
-    // event.preventDefault()
-    // zap.terminate()
+    event.preventDefault()
+    zap.terminate()
   } else {
     mainLog.trace('zap.terminated = false')
     if (zap.mainWindow) {

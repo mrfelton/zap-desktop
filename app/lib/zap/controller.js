@@ -235,15 +235,19 @@ class ZapController {
 
     // Disconnect from any existing lightning wallet connection.
     if (lifecycle.from === 'connected') {
+      mainLog.trace('... from connected')
       if (this.lightning && this.lightning.can('disconnect')) {
+        mainLog.trace('... disconnecting from lightning grpc')
         this.lightning.disconnect()
       }
       if (this.walletUnlocker && this.walletUnlocker.can('disconnect')) {
+        mainLog.trace('... disconnecting from walletUnlocker grpc')
         this.walletUnlocker.disconnect()
       }
     }
     // If we are comming from a running state, stop the Neutrino process.
     else if (lifecycle.from === 'running') {
+      mainLog.trace('... from running')
       await this.shutdownNeutrino()
     }
   }
@@ -425,8 +429,15 @@ class ZapController {
       // The Lightning service is only active once the wallet has been unlocked and a gRPC connection has been made.
       // If it is active, disconnect from it before we terminate neutrino.
       if (this.lightning && this.lightning.can('terminate')) {
+        mainLog.trace('... terminating lightning grpc')
         await this.lightning.disconnect()
       }
+
+      if (this.walletUnlocker && this.walletUnlocker.can('disconnect')) {
+        mainLog.trace('... disconnecting from walletUnlocker grpc')
+        await this.walletUnlocker.disconnect()
+      }
+
       // Kill the Neutrino process (sends SIGINT to Neutrino process)
       this.neutrino.kill()
     }).then(() => mainLog.info('Neutrino shutdown complete'))
