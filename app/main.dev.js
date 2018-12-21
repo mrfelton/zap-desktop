@@ -106,6 +106,7 @@ app.on('ready', async () => {
     mainLog.trace('mainWindow.closed')
     mainWindow = null
     updater.mainWindow = null
+    zap.mainWindow = null
     menuBuilder.mainWindow = null
   })
 
