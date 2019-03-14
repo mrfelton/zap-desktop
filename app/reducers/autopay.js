@@ -3,6 +3,7 @@ import { contactFormSelectors } from './contactsform'
 
 // Initial State
 const initialState = {
+  isCreateModalOpen: false,
   searchQuery: null,
   merchants: [],
 }
@@ -10,6 +11,8 @@ const initialState = {
 // Constants
 // ------------------------------------
 export const UPDATE_AUTOPAY_SEARCH_QUERY = 'UPDATE_AUTOPAY_SEARCH_QUERY'
+export const OPEN_AUTOPAY_CREATE_MODAL = 'OPEN_AUTOPAY_CREATE_MODAL'
+export const CLOSE_AUTOPAY_CREATE_MODAL = 'CLOSE_AUTOPAY_CREATE_MODAL'
 
 // ------------------------------------
 // Actions
@@ -21,11 +24,25 @@ export function updateAutopaySearchQuery(searchQuery) {
   }
 }
 
+export function openAutopayCreateModal() {
+  return {
+    type: OPEN_AUTOPAY_CREATE_MODAL,
+  }
+}
+
+export function closeAutopayCreateModal() {
+  return {
+    type: CLOSE_AUTOPAY_CREATE_MODAL,
+  }
+}
+
 // ------------------------------------
 // Action Handlers
 // ------------------------------------
 const ACTION_HANDLERS = {
   [UPDATE_AUTOPAY_SEARCH_QUERY]: (state, { searchQuery }) => ({ ...state, searchQuery }),
+  [OPEN_AUTOPAY_CREATE_MODAL]: state => ({ ...state, isCreateModalOpen: true }),
+  [CLOSE_AUTOPAY_CREATE_MODAL]: state => ({ ...state, isCreateModalOpen: false }),
 }
 
 // ------------------------------------
@@ -33,6 +50,7 @@ const ACTION_HANDLERS = {
 // ------------------------------------
 const autopaySelectors = {}
 autopaySelectors.searchQuery = state => state.autopay.searchQuery
+autopaySelectors.isCreateModalOpen = state => state.autopay.isCreateModalOpen
 autopaySelectors.merchants = state => contactFormSelectors.suggestedNodes(state)
 
 autopaySelectors.filteredMerchants = createSelector(
