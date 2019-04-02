@@ -15,7 +15,7 @@ export const getDb = name => {
 
   // Migrate custom wallets to lndconnect.
   db.version(2).upgrade(tx =>
-    tx.wallets.toCollection().modify(wallet => {
+    tx.wallets.toCollection().modify((wallet, ref) => {
       if (wallet.type === 'local') {
         wallet.decoder = 'lnd.lndconnect.v1'
       }
@@ -39,7 +39,8 @@ export const getDb = name => {
           wallet.lndconnectUri = lndconnectUri
         } catch (e) {
           // There was a problem migrating this wallet config.
-          // There isn't a way for us to recover from this so we do nothing and move on.
+          // Delete the wallet config and mode on so that we don't end up with invalid wallet configs in the database.
+          delete ref.value
         }
       }
 
