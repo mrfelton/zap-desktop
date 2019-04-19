@@ -59,6 +59,19 @@ export const neutrinoReset = () => {
 export const initNeutrino = () => async (dispatch, getState) => {
   const neutrino = await neutrinoService
 
+  neutrino.on(
+    'NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE',
+    proxyValue(() => {
+      dispatch(setGrpcActiveInterface('walletUnlocker'))
+    })
+  )
+  neutrino.on(
+    'NEUTRINO_LIGHTNING_GRPC_ACTIVE',
+    proxyValue(() => {
+      dispatch(setGrpcActiveInterface('lightning'))
+    })
+  )
+
   // Hook up event listeners for process termination.
   neutrino.on(
     'NEUTRINO_EXIT',
@@ -107,67 +120,74 @@ export const initNeutrino = () => async (dispatch, getState) => {
   )
 }
 
-export const startNeutrino = lndConfig => async dispatch => {
+export const startNeutrino = lndConfig => async (dispatch, getState) => {
+  const { isStartingNeutrino } = getState().neutrino
+  if (isStartingNeutrino) {
+    return
+  }
+
   dispatch({ type: START_NEUTRINO })
+  const neutrino = await neutrinoService
+
   try {
     // Initialise the Neutrino Web Worker..
-    const neutrino = await neutrinoService
     await neutrino.init(lndConfig)
-    dispatch(initNeutrino())
 
-    // Wait for one of the gRPC interfaces to become active to resolve.
-    await new Promise(async (resolve, reject) => {
-      neutrino.on(
-        'NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE',
-        proxyValue(() => {
-          dispatch(setGrpcActiveInterface('walletUnlocker'))
-          resolve()
-        })
-      )
-      neutrino.on(
-        'NEUTRINO_LIGHTNING_GRPC_ACTIVE',
-        proxyValue(() => {
-          dispatch(setGrpcActiveInterface('lightning'))
-          resolve()
-        })
-      )
+    const waitForWalletUnlocker = new Promise((resolve, reject) => {
       // If the services shuts down in the middle of starting up, abort the start process.
       neutrino.on(
         'NEUTRINO_SHUTDOWN',
         proxyValue(() => reject(new Error('Nuetrino was shut down mid-startup.')))
       )
-
-      const pid = await neutrino.start()
-      dispatch(send('processSpawn', { name: 'neutrino', pid }))
+      neutrino.on(
+        'NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE',
+        proxyValue(() => {
+          neutrino.removeAllListeners('NEUTRINO_SHUTDOWN')
+          resolve()
+        })
+      )
     })
-    dispatch({ type: START_NEUTRINO_SUCCESS })
-  } catch (e) {
-    dispatch({ type: START_NEUTRINO_FAILURE, startNeutrinoError: e })
-    throw e
+
+    const pid = await neutrino.start()
+    dispatch(send('processSpawn', { name: 'neutrino', pid }))
+
+    await waitForWalletUnlocker
+
+    neutrino.removeAllListeners('NEUTRINO_SHUTDOWN')
+    dispatch(startNeutrinoSuccess())
+  } catch (error) {
+    dispatch(startNeutrinoFailure(error))
+    throw error
   }
 }
 
-export const stopNeutrino = () => async dispatch => {
+export const startNeutrinoSuccess = () => {
+  return { type: START_NEUTRINO_SUCCESS }
+}
+
+export const startNeutrinoFailure = startNeutrinoError => {
+  return { type: START_NEUTRINO_FAILURE, startNeutrinoError }
+}
+
+export const stopNeutrino = () => async (dispatch, getState) => {
+  const { isStoppingNeutrino } = getState().neutrino
+  if (isStoppingNeutrino) {
+    return
+  }
+
   dispatch({ type: STOP_NEUTRINO })
+
   const neutrino = await neutrinoService
   try {
-    // Remove grpc interface activation listeners.
+    // // Remove grpc interface activation listeners.
     neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
     neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
 
     // Shut down the service.
     await neutrino.shutdown()
-
-    // Now that the service has benen shutdown, remove shutdown listeners.
-    neutrino.removeAllListeners('NEUTRINO_SHUTDOWN')
-
     dispatch(stopNeutrinoSuccess())
   } catch (e) {
     dispatch(stopNeutrinoFailure(e))
-  } finally {
-    // Ensure that all start listeners are eventually removed.
-    neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
-    neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
     neutrino.removeAllListeners('NEUTRINO_SHUTDOWN')
   }
 }

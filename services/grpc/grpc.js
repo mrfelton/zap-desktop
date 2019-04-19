@@ -21,7 +21,7 @@ class GrpcService extends EventEmitter {
       transitions: [
         { name: 'init', from: 'pending', to: 'ready' },
         { name: 'connect', from: 'ready', to: 'connected' },
-        { name: 'activateWalletUnlocker', from: 'connected', to: 'locked' },
+        { name: 'activateWalletUnlocker', from: ['connected', 'active'], to: 'locked' },
         { name: 'activateLightning', from: ['connected', 'locked'], to: 'active' },
         { name: 'disconnect', from: ['connected', 'locked', 'active'], to: 'ready' },
       ],
@@ -91,6 +91,12 @@ class GrpcService extends EventEmitter {
   async disconnect(...args) {
     return this.fsm.disconnect(args)
   }
+  async activateWalletUnlocker(...args) {
+    return this.fsm.activateWalletUnlocker(args)
+  }
+  async activateLightning(...args) {
+    return this.fsm.activateLightning(args)
+  }
 
   // ------------------------------------
   // FSM Observers
@@ -106,8 +112,12 @@ class GrpcService extends EventEmitter {
     const { host } = this.lndConfig
     await validateHost(host)
 
-    // Connect to all services.
-    await this.connectAll()
+    // Connect to active service.
+    try {
+      await this.services.WalletUnlocker.connect()
+    } catch (e) {
+      await this.services.Lightning.connect()
+    }
   }
 
   /**
@@ -143,6 +153,7 @@ class GrpcService extends EventEmitter {
       await this.services.WalletUnlocker.connect()
     }
     await this.services.WalletUnlocker.activate()
+    this.emit('GRPC_WALLET_UNLOCKER_SERVICE_ACTIVE')
   }
 
   /**
@@ -156,6 +167,7 @@ class GrpcService extends EventEmitter {
       await this.services.Lightning.connect()
     }
     await this.services.Lightning.activate()
+    this.emit('GRPC_LIGHTNING_SERVICE_ACTIVE')
   }
 
   // ------------------------------------
