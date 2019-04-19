@@ -59,6 +59,19 @@ export const neutrinoReset = () => {
 export const initNeutrino = () => async (dispatch, getState) => {
   const neutrino = await neutrinoService
 
+  neutrino.on(
+    'NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE',
+    proxyValue(() => {
+      dispatch(setGrpcActiveInterface('walletUnlocker'))
+    })
+  )
+  neutrino.on(
+    'NEUTRINO_LIGHTNING_GRPC_ACTIVE',
+    proxyValue(() => {
+      dispatch(setGrpcActiveInterface('lightning'))
+    })
+  )
+
   // Hook up event listeners for process termination.
   neutrino.on(
     'NEUTRINO_EXIT',
@@ -113,33 +126,15 @@ export const startNeutrino = lndConfig => async dispatch => {
     // Initialise the Neutrino Web Worker..
     const neutrino = await neutrinoService
     await neutrino.init(lndConfig)
-    dispatch(initNeutrino())
 
-    // Wait for one of the gRPC interfaces to become active to resolve.
-    await new Promise(async (resolve, reject) => {
-      neutrino.on(
-        'NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE',
-        proxyValue(() => {
-          dispatch(setGrpcActiveInterface('walletUnlocker'))
-          resolve()
-        })
-      )
-      neutrino.on(
-        'NEUTRINO_LIGHTNING_GRPC_ACTIVE',
-        proxyValue(() => {
-          dispatch(setGrpcActiveInterface('lightning'))
-          resolve()
-        })
-      )
-      // If the services shuts down in the middle of starting up, abort the start process.
-      neutrino.on(
-        'NEUTRINO_SHUTDOWN',
-        proxyValue(() => reject(new Error('Nuetrino was shut down mid-startup.')))
-      )
+    // // If the services shuts down in the middle of starting up, abort the start process.
+    // neutrino.on(
+    //   'NEUTRINO_SHUTDOWN',
+    //   proxyValue(() => throw new Error('Nuetrino was shut down mid-startup.'))
+    // )
 
-      const pid = await neutrino.start()
-      dispatch(send('processSpawn', { name: 'neutrino', pid }))
-    })
+    const pid = await neutrino.start()
+    dispatch(send('processSpawn', { name: 'neutrino', pid }))
     dispatch({ type: START_NEUTRINO_SUCCESS })
   } catch (e) {
     dispatch({ type: START_NEUTRINO_FAILURE, startNeutrinoError: e })
@@ -147,13 +142,19 @@ export const startNeutrino = lndConfig => async dispatch => {
   }
 }
 
-export const stopNeutrino = () => async dispatch => {
+export const stopNeutrino = () => async (dispatch, getState) => {
+  const { isStoppingNeutrino } = getState().neutrino
+  if (isStoppingNeutrino) {
+    return
+  }
+
   dispatch({ type: STOP_NEUTRINO })
+
   const neutrino = await neutrinoService
   try {
-    // Remove grpc interface activation listeners.
-    neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
-    neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
+    // // Remove grpc interface activation listeners.
+    // neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
+    // neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
 
     // Shut down the service.
     await neutrino.shutdown()
@@ -166,8 +167,8 @@ export const stopNeutrino = () => async dispatch => {
     dispatch(stopNeutrinoFailure(e))
   } finally {
     // Ensure that all start listeners are eventually removed.
-    neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
-    neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
+    // neutrino.removeAllListeners('NEUTRINO_WALLET_UNLOCKER_GRPC_ACTIVE')
+    // neutrino.removeAllListeners('NEUTRINO_LIGHTNING_GRPC_ACTIVE')
     neutrino.removeAllListeners('NEUTRINO_SHUTDOWN')
   }
 }
