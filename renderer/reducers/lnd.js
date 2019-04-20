@@ -162,9 +162,7 @@ export const startLnd = wallet => async dispatch => {
     dispatch(lndStarted())
   } catch (e) {
     // If we are working with a local wallet, stop the neutrino instance.
-    if (lndConfig.type === 'local') {
-      await dispatch(stopNeutrino())
-    }
+    await dispatch(stopLnd())
     dispatch(startLndError({ host: e.message }))
     return Promise.reject(e)
   }
@@ -209,10 +207,7 @@ export const clearStartLndError = () => {
  * Stop lnd.
  */
 export const stopLnd = () => async (dispatch, getState) => {
-  const { isStoppingLnd, lndConfig } = getState().lnd
-  if (isStoppingLnd) {
-    return
-  }
+  const { lndConfig } = getState().lnd
 
   dispatch({ type: STOP_LND })
 
