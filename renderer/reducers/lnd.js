@@ -43,8 +43,8 @@ export const CONNECT_GRPC = 'CONNECT_GRPC'
 export const CONNECT_GRPC_SUCCESS = 'CONNECT_GRPC_SUCCESS'
 export const CONNECT_GRPC_FAILURE = 'CONNECT_GRPC_FAILURE'
 
-export const START_WALLET_UNLOCKER_SUCCESS = 'START_WALLET_UNLOCKER_SUCCESS'
-export const START_LIGHTNING_WALLET_SUCCESS = 'START_LIGHTNING_WALLET_SUCCESS'
+export const LND_WALLET_UNLOCKER_GRPC_ACTIVE = 'LND_WALLET_UNLOCKER_GRPC_ACTIVE'
+export const LND_LIGHTNING_GRPC_ACTIVE = 'LND_LIGHTNING_GRPC_ACTIVE'
 
 export const DISCONNECT_GRPC = 'DISCONNECT_GRPC'
 export const DISCONNECT_GRPC_SUCCESS = 'DISCONNECT_GRPC_SUCCESS'
@@ -61,8 +61,8 @@ export const connectGrpcService = () => async dispatch => {
   const handleInvoiceSubscription = proxyValue(data => dispatch(receiveInvoiceData(data)))
   const handleTransactionSubscription = proxyValue(data => dispatch(receiveTransactionData(data)))
   const handleChannelGraphSubscription = proxyValue(data => dispatch(receiveChannelGraphData(data)))
-  const handleWalletUnlockerActive = proxyValue(() => dispatch(walletUnlockerGrpcStarted()))
-  const handleLightningActive = proxyValue(() => dispatch(lightningGrpcStarted()))
+  const handleWalletUnlockerActive = proxyValue(() => dispatch(setWalletUnlockerGrpcActive()))
+  const handleLightningActive = proxyValue(() => dispatch(setLightningGrpcActive()))
 
   try {
     // Hook up event listeners for stream subscriptions.
@@ -158,7 +158,7 @@ export const startLnd = wallet => async dispatch => {
           const grpc = await grpcService
           if (await grpc.can('activateLightning')) {
             await grpc.activateLightning()
-            dispatch(lightningGrpcStarted())
+            dispatch(setLightningGrpcActive())
           }
         })
       )
@@ -245,8 +245,12 @@ export const lndStopped = () => ({
  * Called when connection to Lightning gRPC interface has been established.
  * (lnd wallet is connected and unlocked)
  */
-export const lightningGrpcStarted = () => async (dispatch, getState) => {
-  dispatch({ type: START_LIGHTNING_WALLET_SUCCESS })
+export const setLightningGrpcActive = () => async (dispatch, getState) => {
+  dispatch({ type: LND_LIGHTNING_GRPC_ACTIVE })
+
+  // Fetch key info from lnd as early as possible.
+  dispatch(fetchInfo())
+  dispatch(fetchBalance())
 
   // We are connected to the lightning interface, so the wallet must now be unlocked.
   dispatch(walletUnlocked())
@@ -259,10 +263,6 @@ export const lightningGrpcStarted = () => async (dispatch, getState) => {
     const wallet = await dispatch(putWallet(lndConfig))
     await dispatch(setActiveWallet(wallet.id))
   }
-
-  // Fetch key info from lnd as early as possible.
-  dispatch(fetchInfo())
-  dispatch(fetchBalance())
 }
 
 /**
@@ -271,8 +271,8 @@ export const lightningGrpcStarted = () => async (dispatch, getState) => {
  * Called when connection to WalletUnlocker gRPC interface has been established.
  * (lnd is ready to unlock or create wallet)
  */
-export const walletUnlockerGrpcStarted = () => ({
-  type: START_WALLET_UNLOCKER_SUCCESS,
+export const setWalletUnlockerGrpcActive = () => ({
+  type: LND_WALLET_UNLOCKER_GRPC_ACTIVE,
 })
 
 /**
@@ -509,13 +509,13 @@ const ACTION_HANDLERS = {
     ...state,
     isStartingGrpc: false,
   }),
-  [START_WALLET_UNLOCKER_SUCCESS]: state => ({
+  [LND_WALLET_UNLOCKER_GRPC_ACTIVE]: state => ({
     ...state,
     isWalletUnlockerGrpcActive: true,
     isLightningGrpcActive: false,
   }),
 
-  [START_LIGHTNING_WALLET_SUCCESS]: state => ({
+  [LND_LIGHTNING_GRPC_ACTIVE]: state => ({
     ...state,
     isWalletUnlockerGrpcActive: false,
     isLightningGrpcActive: true,

@@ -88,7 +88,7 @@ Object {
 }
 `;
 
-exports[`reducers neutrinoReducer should handle START_LIGHTNING_WALLET_SUCCESS 1`] = `
+exports[`reducers neutrinoReducer should handle LIGHTNING_GRPC_ACTIVE 1`] = `
 Object {
   "isLightningGrpcActive": true,
   "isWalletUnlockerGrpcActive": false,
@@ -124,7 +124,7 @@ Object {
 }
 `;
 
-exports[`reducers neutrinoReducer should handle START_WALLET_UNLOCKER_SUCCESS 1`] = `
+exports[`reducers neutrinoReducer should handle WALLET_UNLOCKER_GRPC_ACTIVE 1`] = `
 Object {
   "isLightningGrpcActive": false,
   "isWalletUnlockerGrpcActive": true,
