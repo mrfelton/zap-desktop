@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
-import { ConnectedRouter } from 'connected-react-router'
+import { Router } from 'react-router'
 import { ThemeProvider } from 'styled-components'
 import { hot } from 'react-hot-loader/root'
 
@@ -92,7 +92,7 @@ class Root extends React.Component {
     }
 
     return (
-      <ConnectedRouter history={history}>
+      <Router history={history}>
         <ThemeProvider theme={theme}>
           <React.Fragment>
             <GlobalStyle />
@@ -139,16 +139,16 @@ class Root extends React.Component {
             </PageWithLoading>
           </React.Fragment>
         </ThemeProvider>
-      </ConnectedRouter>
+      </Router>
     )
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state, ownProps) => ({
   hasWallets: walletSelectors.hasWallets(state),
   notifications: notificationSelectors.getNotificationState(state),
   theme: themeSelectors.currentThemeSettings(state),
-  isLoading: isLoading(state) || isLoadingPerPath(state),
+  isLoading: isLoading(state) || isLoadingPerPath(state, ownProps.history.location),
   loadingMessage: getLoadingMessage(state),
   isMounted: appSelectors.isMounted(state),
   isAppReady: appSelectors.isAppReady(state),
