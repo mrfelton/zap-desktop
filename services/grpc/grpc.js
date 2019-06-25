@@ -42,7 +42,10 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Initiate gRPC connection.
+   * connect - Initiate gRPC connection.
+   *
+   * @param {object} options Connection options
+   * @returns {LndGrpc} LndGrpc connection
    */
   connect(options) {
     if (this.grpc && this.grpc.state !== 'ready') {
@@ -75,7 +78,9 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Disconnect gRPC service.
+   * disconnect - Disconnect gRPC service.
+   *
+   * @param {...object} args Disconnect args
    */
   async disconnect(...args) {
     await this.unsubscribe()
@@ -94,14 +99,17 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Wait for grpc service to enter specific sate (proxy method)
+   * waitForState - Wait for grpc service to enter specific sate (proxy method).
+   *
+   * @param {...object} args WaitForState args
+   * @returns {object} LndGrpc.waitForState
    */
   waitForState(...args) {
     return proxyValue(this.grpc.waitForState(args))
   }
 
   /**
-   * Subscribe to all gRPC streams.
+   * subscribeAll - Subscribe to all gRPC streams.
    */
   subscribeAll() {
     this.subscribe('invoices', 'transactions', 'info', 'backups')
@@ -120,9 +128,10 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
+   * subscribe - Subscribe Subscribe to gRPC streams (``@streams` must be a subset of `this.availableSubscriptions`).
+   *
    * @param {...string|object} streams optional list of streams to subscribe to. if omitted, uses all available streams
    * if `stream` is to be called with params array element must be of {name, params} format
-   * @streams must be a subset of `this.availableSubscriptions`
    */
   subscribe(...streams) {
     // some of the streams may have params
@@ -190,10 +199,9 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Unsubscribe from all streams.
+   * unsubscribe - Unsubscribe from all streams. (@streams must be a subset of `this.availableSubscriptions`).
    *
    * @param {...string} streams optional list of streams to unsubscribe from. if omitted, uses all active streams.
-   * @streams must be a subset of `this.availableSubscriptions`
    */
   async unsubscribe(...streams) {
     // make sure we are unsubscribing from active services if a specific list is provided
@@ -211,7 +219,7 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Register a stream.
+   * registerSubscription - Register a stream.
    * Provide a mapping between a service and a subscription activation helper method.
    *
    * @param  {string} key         Key used to identify the subscription.
@@ -223,7 +231,10 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Unsubscribe from a single stream.
+   * cancelSubscription - Unsubscribe from a single stream.
+   *
+   * @param {string} key Name of stream subscription to cancel
+   * @returns {Promise} Resolves once stream has been canceled
    */
   async cancelSubscription(key) {
     if (!this.activeSubscriptions[key]) {
@@ -263,7 +274,9 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * Get connection details based on wallet config.
+   * getConnectionSettings - Get connection details based on wallet config.
+   *
+   * @returns {object} Connection settings
    */
   getConnectionSettings() {
     const { id, type, host, cert, macaroon, protoDir } = this.options
@@ -277,7 +290,7 @@ class ZapGrpc extends EventEmitter {
   }
 
   /**
-   * async subscribeChannelGraph - Set up subscription to the channel graph stream.
+   * subscribeChannelGraph - Set up subscription to the channel graph stream.
    *
    * There is no guarentee that it is ready yet as it can take time for lnd to start it once chain sync has finished
    * so set up a schedular to keep retrying until it works.
