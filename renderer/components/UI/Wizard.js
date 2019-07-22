@@ -272,7 +272,9 @@ class Wizard extends React.Component {
    *  handleSkip - Toggles skip mode.
    *
    * @param value if skip mode is currently active
+   * @returns
    */
+
   handleSkip = value => {
     this.setState({
       isSkip: value,
