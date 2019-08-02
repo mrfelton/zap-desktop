@@ -10,8 +10,8 @@ import methods from './lightning.methods'
  * @param {object} payload Payload
  * @returns {object} Grpc Call
  */
-function subscribeChannelGraph(payload = {}) {
-  const call = this.service.subscribeChannelGraph(payload)
+function setupChannelGraphSubscription(payload = {}) {
+  const call = this.subscribeChannelGraph(payload)
   call.on('data', data => {
     grpcLog.debug('CHANNELGRAPH DATA: %o', data)
     this.emit('subscribeChannelGraph.data', data)
@@ -39,8 +39,8 @@ function subscribeChannelGraph(payload = {}) {
  * @param {object} payload Payload
  * @returns {object} Grpc Call
  */
-function subscribeInvoices(payload = {}) {
-  const call = this.service.subscribeInvoices(payload)
+function setupInvoiceSubscription(payload = {}) {
+  const call = this.subscribeInvoices(payload)
   call.on('data', data => {
     grpcLog.debug('INVOICES DATA: %o', data)
     this.emit('subscribeInvoices.data', data)
@@ -68,8 +68,8 @@ function subscribeInvoices(payload = {}) {
  * @param {object} payload Payload
  * @returns {object} Grpc Call
  */
-function subscribeTransactions(payload = {}) {
-  const call = this.service.subscribeTransactions(payload)
+function setupTransactionsSubscription(payload = {}) {
+  const call = this.subscribeTransactions(payload)
   call.on('data', data => {
     grpcLog.debug('TRANSACTIONS DATA: %o', data)
     this.emit('subscribeTransactions.data', data)
@@ -96,9 +96,9 @@ function subscribeTransactions(payload = {}) {
  * @param {object} payload Payload
  * @returns {object} Grpc Call
  */
-function subscribeChannelBackups(payload = {}) {
-  if (this.service.subscribeChannelBackups) {
-    const call = this.service.subscribeChannelBackups(payload)
+function setupChannelBackupsSubscription(payload = {}) {
+  if (this.subscribeChannelBackups) {
+    const call = this.subscribeChannelBackups(payload)
     call.on('data', data => {
       grpcLog.debug('CHANNEL BACKUP: %o', data)
       this.emit('subscribeChannelBackup.data', data)
@@ -128,7 +128,7 @@ function subscribeChannelBackups(payload = {}) {
  * @param {{pollInterval}} options Subscription options
  * @returns {object} polling stream for the LND getInfo command
  */
-function subscribeGetInfo({ pollInterval = 5000 } = {}) {
+function setupGetInfoSubscription({ pollInterval = 5000 } = {}) {
   return streamify.call(this, {
     command: methods.getInfo.bind(this),
     dataEventName: 'subscribeGetInfo.data',
@@ -138,9 +138,9 @@ function subscribeGetInfo({ pollInterval = 5000 } = {}) {
 }
 
 export default {
-  subscribeChannelGraph,
-  subscribeInvoices,
-  subscribeTransactions,
-  subscribeGetInfo,
-  subscribeChannelBackups,
+  setupChannelGraphSubscription,
+  setupInvoiceSubscription,
+  setupTransactionsSubscription,
+  setupGetInfoSubscription,
+  setupChannelBackupsSubscription,
 }

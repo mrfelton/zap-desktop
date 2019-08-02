@@ -38,11 +38,11 @@ class ZapGrpc extends EventEmitter {
     super()
 
     this.availableSubscriptions = {}
-    this.registerSubscription('invoices', 'Lightning', 'subscribeInvoices')
-    this.registerSubscription('transactions', 'Lightning', 'subscribeTransactions')
-    this.registerSubscription('channelgraph', 'Lightning', 'subscribeChannelGraph')
-    this.registerSubscription('info', 'Lightning', 'subscribeGetInfo')
-    this.registerSubscription('backups', 'Lightning', 'subscribeChannelBackups')
+    this.registerSubscription('invoices', 'Lightning', 'setupInvoiceSubscription')
+    this.registerSubscription('transactions', 'Lightning', 'setupTransactionsSubscription')
+    this.registerSubscription('channelgraph', 'Lightning', 'setupChannelGraphSubscription')
+    this.registerSubscription('info', 'Lightning', 'setupGetInfoSubscription')
+    this.registerSubscription('backups', 'Lightning', 'setupChannelBackupsSubscription')
 
     Object.assign(this, ZapGrpc.VOLATILE_STATE)
   }
