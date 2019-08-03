@@ -58,6 +58,7 @@ const logConfig = name => ({
 // Create logs for use in the app.
 export const mainLog = debugLogger.config(logConfig('main'))('zap')
 export const lndLog = debugLogger.config(logConfig('lnd'))('zap')
+export const bitcoindLog = debugLogger.config(logConfig('bitcoind'))('zap')
 export const updaterLog = debugLogger.config(logConfig('updater'))('zap')
 export const grpcLog = debugLogger.config(logConfig('grpc'))('zap')
 

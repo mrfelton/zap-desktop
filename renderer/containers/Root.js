@@ -10,6 +10,7 @@ import { initDatabase, setLoading, setMounted, appSelectors } from 'reducers/app
 import { initSettings } from 'reducers/settings'
 import { initTheme, themeSelectors } from 'reducers/theme'
 import { walletSelectors } from 'reducers/wallet'
+import { startBitcoind } from 'reducers/bitcoind'
 import { isLoading, isLoadingPerPath, getLoadingMessage } from 'reducers/utils'
 import { Page, Titlebar, GlobalStyle } from 'components/UI'
 import GlobalNotification from 'components/GlobalNotification'
@@ -32,6 +33,7 @@ const Root = ({
   initDatabase,
   initSettings,
   initTheme,
+  startBitcoind,
   isMounted,
   setMounted,
   hasWallets,
@@ -54,10 +56,11 @@ const Root = ({
         await initDatabase()
         await initSettings()
         await initTheme()
+        await startBitcoind()
       }
     }
     init()
-  }, [initDatabase, initSettings, initTheme, isMounted, setMounted])
+  }, [initDatabase, initSettings, initTheme, isMounted, setMounted, startBitcoind])
 
   const redirectToHome = () => history.push('/home')
   const redirectToLogout = () => history.push('/logout')
@@ -129,6 +132,7 @@ Root.propTypes = {
   notifications: PropTypes.array.isRequired,
   removeNotification: PropTypes.func.isRequired,
   setMounted: PropTypes.func.isRequired,
+  startBitcoind: PropTypes.func.isRequired,
   theme: PropTypes.object,
 }
 
@@ -150,6 +154,7 @@ const mapDispatchToProps = {
   initTheme,
   setLoading,
   setMounted,
+  startBitcoind,
 }
 
 export default hot(

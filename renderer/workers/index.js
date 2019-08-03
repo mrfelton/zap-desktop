@@ -2,10 +2,11 @@ import { proxy } from 'comlinkjs'
 import proxymise from './proxymise'
 
 const Neutrino = proxy(new Worker(`./neutrino.worker.js`))
+const Bitcoind = proxy(new Worker(`./bitcoind.worker.js`))
 const ZapGrpc = proxy(new Worker('./grpc.worker.js'))
 
 /**
- * [LightningInstance description]
+ * Neutrino worker service singleton instance.
  */
 class NeutrinoInstance {
   constructor() {
@@ -19,7 +20,20 @@ class NeutrinoInstance {
 export const neutrino = proxymise(new NeutrinoInstance())
 
 /**
- * [GrpcInstance description]
+ * Bitcoind worker service singleton instance.
+ */
+class BitcoindInstance {
+  constructor() {
+    if (!BitcoindInstance.instance) {
+      BitcoindInstance.instance = new Bitcoind()
+    }
+    return BitcoindInstance.instance
+  }
+}
+export const bitcoind = proxymise(new BitcoindInstance())
+
+/**
+ * Grpp worker service singleton instance.
  */
 class GrpcInstance {
   constructor() {

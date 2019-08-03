@@ -8,6 +8,7 @@ import fileExists from '@zap/utils/fileExists'
 import dirExists from '@zap/utils/dirExists'
 import { getAllLocalWallets, getWalletDir, deleteLocalWallet } from '@zap/utils/localWallets'
 import lndBinaryPath from '@zap/utils/lndBinaryPath'
+import bitcoindBinaryPath from '@zap/utils/bitcoindBinaryPath'
 import lndGrpcProtoDir from '@zap/utils/lndGrpcProtoDir'
 import validateHost from '@zap/utils/validateHost'
 import splitHostname from '@zap/utils/splitHostname'
@@ -146,6 +147,7 @@ window.Zap = {
   splitHostname,
   normalizeBackupDir,
   getPackageDetails,
+  bitcoindBinaryPath,
 }
 
 // Provide access to ipcRenderer.

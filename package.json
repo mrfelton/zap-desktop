@@ -84,6 +84,10 @@
       {
         "from": "node_modules/lnd-grpc/proto",
         "to": "resources/proto"
+      },
+      {
+        "from": "node_modules/bitcoind-binary/vendor/bitcoin/bin/bitcoind",
+        "to": "resources/bin/bitcoind"
       }
     ],
     "protocols": [
@@ -311,6 +315,7 @@
     "axios": "0.19.0",
     "bip21": "2.0.2",
     "bip39-en": "1.1.1",
+    "bitcoind-binary": "0.0.2",
     "bitcoinjs-lib": "5.1.5",
     "bolt11": "1.2.6",
     "coininfo": "5.1.0",

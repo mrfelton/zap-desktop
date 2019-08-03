@@ -11,6 +11,7 @@ const config = merge.smart(baseConfig, {
   entry: {
     grpc: path.join(rootDir, 'renderer/workers', 'grpc.worker'),
     neutrino: path.join(rootDir, 'renderer/workers', 'neutrino.worker'),
+    bitcoind: path.join(rootDir, 'renderer/workers', 'bitcoind.worker'),
   },
   output: {
     filename: '[name].worker.js',

@@ -4374,6 +4374,15 @@ bitcoin-ops@^1.3.0, bitcoin-ops@^1.4.0:
   resolved "https://registry.yarnpkg.com/bitcoin-ops/-/bitcoin-ops-1.4.1.tgz#e45de620398e22fd4ca6023de43974ff42240278"
   integrity sha512-pef6gxZFztEhaE9RY9HmWVmiIHqCb2OyS4HPKkpc6CIiiOa3Qmuoylxc5P2EkU3w+5eTSifI9SEZC88idAIGow==
 
+bitcoind-binary@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/bitcoind-binary/-/bitcoind-binary-0.0.2.tgz#38f217efd18a1843cced70b408f56ce7afca3c04"
+  integrity sha512-o6lz/t+r543PSd/DfY4/3vOqBe5G+wws93LDz1wyoqQ7qXknkQhxLxmFhhOQbRFbOgpRUqarCmlspwSatOnglw==
+  dependencies:
+    hasha "5.0.0"
+    npmlog "4.1.2"
+    prebuild-install "5.3.0"
+
 bitcoinjs-lib@5.1.5:
   version "5.1.5"
   resolved "https://registry.yarnpkg.com/bitcoinjs-lib/-/bitcoinjs-lib-5.1.5.tgz#726ba73d2b4976512d70a538cb03288acfcbe757"
@@ -8744,7 +8753,7 @@ hash.js@^1.0.0, hash.js@^1.0.3:
     inherits "^2.0.3"
     minimalistic-assert "^1.0.1"
 
-hasha@^5.0.0:
+hasha@5.0.0, hasha@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/hasha/-/hasha-5.0.0.tgz#fdc3785caea03df29535fc8adb512c3d3a709004"
   integrity sha512-PqWdhnQhq6tqD32hZv+l1e5mJHNSudjnaAzgAHfkGiU0ABN6lmbZF8abJIulQHbZ7oiHhP8yL6O910ICMc+5pw==
@@ -11968,7 +11977,7 @@ npm-run-path@^2.0.0:
   dependencies:
     path-key "^2.0.0"
 
-npmlog@^4.0.1, npmlog@^4.0.2, npmlog@^4.1.2:
+npmlog@4.1.2, npmlog@^4.0.1, npmlog@^4.0.2, npmlog@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-4.1.2.tgz#08a7f2a8bf734604779a9efa4ad5cc717abb954b"
   integrity sha512-2uUqazuKlTaSI/dC8AzicUck7+IrEaOnN/e0jd3Xtt1KcGpwx30v50mL7oPyr/h9bL3E4aZccVwpwP+5W9Vjkg==

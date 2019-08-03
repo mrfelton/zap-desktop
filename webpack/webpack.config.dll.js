@@ -28,6 +28,7 @@ export default merge.smart(baseConfig, {
     'source-map-support',
     'googleapis',
     'keytar',
+    'bitcoind-binary',
   ],
   entry: {
     renderer: Object.keys(dependencies),

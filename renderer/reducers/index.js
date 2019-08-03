@@ -10,6 +10,7 @@ import lnd from './lnd'
 import ticker from './ticker'
 import info from './info'
 import balance from './balance'
+import bitcoind from './bitcoind'
 import payment from './payment'
 import peers from './peers'
 import channels from './channels'
@@ -42,6 +43,7 @@ const appReducer = combineReducers({
   autopilot,
   balance,
   backup,
+  bitcoind,
   channels,
   contactsform,
   info,

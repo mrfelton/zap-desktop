@@ -1,1 +1,13 @@
-// TODO: Bitcoind process controller code to go here.
+import Bitcoind from './bitcoind'
+
+export default Bitcoind
+export {
+  BITCOIND_CHAIN_SYNC_PENDING,
+  BITCOIND_CHAIN_SYNC_IN_PROGRESS,
+  BITCOIND_CHAIN_SYNC_COMPLETE,
+  BITCOIND_ERROR,
+  BITCOIND_EXIT,
+  BITCOIND_RPC_ACTIVE,
+  BITCOIND_GOT_CURRENT_BLOCK_HEIGHT,
+  BITCOIND_GOT_BITCOIND_BLOCK_HEIGHT,
+} from './bitcoind'

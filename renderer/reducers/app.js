@@ -8,6 +8,7 @@ import { tickerSelectors } from './ticker'
 import { setIsWalletOpen, walletSelectors } from './wallet'
 import { setTheme, themeSelectors } from './theme'
 import { stopLnd } from './lnd'
+import { stopBitcoind } from './bitcoind'
 import { openModal } from './modal'
 import createReducer from './utils/createReducer'
 import messages from './messages'
@@ -149,6 +150,7 @@ export const terminateApp = () => async dispatch => {
   try {
     dispatch({ type: TERMINATE_APP })
     await dispatch(stopLnd())
+    await dispatch(stopBitcoind())
     dispatch({ type: TERMINATE_APP_SUCCESS })
     dispatch(send('terminateAppSuccess'))
   } catch (e) {

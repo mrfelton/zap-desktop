@@ -6,7 +6,7 @@ const STABLE_VERSION = '0.5.x'
 
 module.exports = {
   // Default debug settings.
-  debug: 'zap:main,zap:updater,zap:grpc,lnrpc*',
+  debug: 'zap:bitcoind,zap:main,zap:updater,zap:grpc,lnrpc*',
   debugLevel: 'info',
 
   // Database settings.

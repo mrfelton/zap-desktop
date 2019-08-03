@@ -25,6 +25,10 @@ class ZapController {
       ipcMain.once('killNeutrinoSuccess', () => this.sendMessage('killNeutrinoSuccess'))
       this.sendMessage('killNeutrino', signal)
     })
+    ipcMain.on('killBitcoind', (event, signal) => {
+      ipcMain.once('killBitcoindSuccess', () => this.sendMessage('killBitcoindSuccess'))
+      this.sendMessage('killBitcoind', signal)
+    })
     ipcMain.on('processSpawn', (event, { name, pid }) => {
       this.processes[name] = pid
     })
