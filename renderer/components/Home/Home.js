@@ -5,6 +5,7 @@ import { Box, Flex } from 'rebass/styled-components'
 import { Bar, MainContent, Panel, Sidebar } from 'components/UI'
 import ZapLogo from 'components/Icon/ZapLogo'
 import CreateWalletButton from './CreateWalletButton'
+import BitcoindButton from './BitcoindButton'
 import NoWallets from './NoWallets'
 import WalletLauncher from './WalletLauncher'
 import WalletsMenu from './WalletsMenu'
@@ -105,6 +106,11 @@ class Home extends React.Component {
               />
             </Panel.Body>
             <Panel.Footer>
+              <Bar variant="light" />
+              <Box px={4} py={2}>
+                <BitcoindButton history={history} width={1} />
+              </Box>
+
               <Bar variant="light" />
               <Box px={4} py={2}>
                 <CreateWalletButton history={history} width={1} />

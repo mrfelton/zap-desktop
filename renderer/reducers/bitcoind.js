@@ -438,7 +438,6 @@ const isBitcoindRunningSelector = state => state.bitcoind.isBitcoindRunning
 const bitcoindSyncStatusSelector = state => state.bitcoind.syncStatus
 const blockHeightSelector = state => state.bitcoind.blockHeight
 const bitcoindBlockHeightSelector = state => state.bitcoind.bitcoindBlockHeight
-const bitcoindFirstBlockHeightSelector = state => state.bitcoind.bitcoindFirstBlockHeight
 const isBitcoindCrashedSelector = state => state.bitcoind.isBitcoindCrashed
 const bitcoindCrashCodeSelector = state => state.bitcoind.bitcoindCrashCode
 const bitcoindCrashSignalSelector = state => state.bitcoind.bitcoindCrashSignal
@@ -454,18 +453,8 @@ bitcoindSelectors.bitcoindBlockHeight = bitcoindBlockHeightSelector
 bitcoindSelectors.bitcoindSyncPercentage = createSelector(
   blockHeightSelector,
   bitcoindBlockHeightSelector,
-  bitcoindFirstBlockHeightSelector,
-  (blockHeight, bitcoindBlockHeight, bitcoindFirstBlockHeight) => {
-    // blocks
-    const blocksToSync = blockHeight - bitcoindFirstBlockHeight
-    const blocksRemaining = blockHeight - bitcoindBlockHeight
-    const blocksDone = blocksToSync - blocksRemaining
-
-    // totals
-    const totalToSync = blocksToSync
-    const done = blocksDone
-
-    const percentage = Math.floor((done / totalToSync) * 100)
+  (blockHeight, bitcoindBlockHeight) => {
+    const percentage = (bitcoindBlockHeight / blockHeight) * 100
 
     return Number.isFinite(percentage) ? percentage : undefined
   }

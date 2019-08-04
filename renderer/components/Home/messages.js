@@ -11,6 +11,7 @@ export default defineMessages({
   section_delete_title: 'Delete',
   section_connection_details: 'Connection details',
   create_wallet_button_text: 'Create new wallet',
+  bitcoind_button_text: 'Bitcoind',
   launch_wallet_button_text: 'Launch now',
   delete_wallet_dialog_acknowledgement: 'I understand this is an irreversible action',
   delete_wallet_dialog_warning:

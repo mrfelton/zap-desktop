@@ -236,7 +236,7 @@ class Bitcoind extends EventEmitter {
     if (changed) {
       mainLog.info('Set bitcoind block height', heightAsNumber)
       this.emit(BITCOIND_GOT_BITCOIND_BLOCK_HEIGHT, heightAsNumber)
-      this.setCurrentBlockHeight(heightAsNumber)
+      // this.setCurrentBlockHeight(heightAsNumber)
     }
   }
 

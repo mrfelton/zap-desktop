@@ -22,6 +22,7 @@ import Home from './Home'
 import ModalStack from './RootModalStack'
 import Onboarding from './Onboarding/Onboarding'
 import Syncing from './Syncing'
+import Bitcoind from './Bitcoind'
 import App from './App'
 import WalletStarter from './Wallet/WalletStarter'
 
@@ -98,6 +99,11 @@ const Root = ({
                   exact
                   path="/syncing"
                   render={() => <Syncing onClose={redirectToLogout} pb={0} px={0} />}
+                />
+                <Route
+                  exact
+                  path="/bitcoind"
+                  render={() => <Bitcoind onClose={redirectToLogout} pb={0} px={0} />}
                 />
                 <Route
                   path="/app"

@@ -67,8 +67,11 @@ const appReducer = combineReducers({
 export default (state, action) => {
   // Reset all reducers, except for selected reducers which should persist.
   if (action.type === 'RESET_APP') {
-    const { app, settings, intl, theme, wallet, lnd, neutrino, ticker } = state
-    return appReducer({ app, settings, intl, theme, wallet, lnd, neutrino, ticker }, action)
+    const { app, settings, intl, theme, wallet, lnd, neutrino, bitcoind, ticker } = state
+    return appReducer(
+      { app, settings, intl, theme, wallet, lnd, neutrino, bitcoind, ticker },
+      action
+    )
   }
   return appReducer(state, action)
 }
