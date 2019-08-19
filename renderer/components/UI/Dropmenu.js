@@ -357,17 +357,13 @@ DropmenuSubmenu.defaultProps = {
 const DropmenuMenu = ({ menuRef, ...rest }) => {
   const { justify } = useContext(MenuContext)
   return (
-    <Box
-      css={`
-        position: relative;
-      `}
-    >
+    <Box sx={{ position: 'relative' }}>
       <Flex
-        css={`
-          position: absolute;
-          z-index: 1;
-          right: ${justify === 'right' ? 0 : null};
-        `}
+        sx={{
+          position: 'absolute',
+          zIndex: 1,
+          right: justify === 'right' ? 0 : null,
+        }}
       >
         <DropmenuContent {...rest} menuRef={menuRef} />
       </Flex>

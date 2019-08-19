@@ -155,11 +155,11 @@ class Request extends React.Component {
       <TextArea
         css={`
           resize: vertical;
-          min-height: 48px;
         `}
         field="memo"
         label={intl.formatMessage({ ...messages.memo })}
         mb={3}
+        minHeight="48px"
         name="memo"
         placeholder={intl.formatMessage({ ...messages.memo_placeholder })}
         rows={3}
@@ -212,15 +212,7 @@ class Request extends React.Component {
     const { currentStep } = this.state
 
     return (
-      <Form
-        css={`
-          height: 100%;
-        `}
-        width={1}
-        {...rest}
-        getApi={this.setFormApi}
-        onSubmit={this.onSubmit}
-      >
+      <Form height="100%" width={1} {...rest} getApi={this.setFormApi} onSubmit={this.onSubmit}>
         {({ formState }) => {
           // Determine what the text should be for the next button.
           let nextButtonText = intl.formatMessage({ ...messages.button_text })

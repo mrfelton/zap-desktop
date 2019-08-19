@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Button as BaseButton, Flex, Text } from 'rebass/styled-components'
+import merge from 'lodash/merge'
 import Spinner from './Spinner'
 
 const Wrapper = styled(BaseButton)`
@@ -34,6 +35,7 @@ const Button = React.forwardRef((props, ref) => {
     size,
     variant,
     className,
+    sx,
     icon: Icon,
     ...rest
   } = props
@@ -64,13 +66,18 @@ const Button = React.forwardRef((props, ref) => {
   return (
     <Wrapper
       ref={ref}
-      borderRadius={borderRadius}
       className={wrapperClasses}
       disabled={isDisabled}
       px={size['x']}
       py={size['y']}
-      variant={variant}
       {...rest}
+      sx={merge(
+        {
+          borderRadius,
+        },
+        sx
+      )}
+      variant={variant}
     >
       {isProcessing || Icon ? (
         <Flex alignItems="center">
@@ -100,13 +107,11 @@ Button.propTypes = {
   isProcessing: PropTypes.bool,
   justify: PropTypes.oneOf(['left', 'right', 'center']),
   size: PropTypes.oneOf(['small', 'medium']),
+  sx: PropTypes.object,
   variant: PropTypes.string,
 }
 
 Button.defaultProps = {
-  isProcessing: false,
-  isActive: false,
-  isDisabled: false,
   size: 'medium',
   justify: 'center',
   variant: 'normal',

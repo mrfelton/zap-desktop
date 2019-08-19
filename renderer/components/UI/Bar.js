@@ -1,26 +1,33 @@
-import styled from 'styled-components'
-import { variant, space, height, color } from 'styled-system'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Box } from 'rebass/styled-components'
+import merge from 'lodash/merge'
 
-const bars = variant({
-  key: 'bars',
-})
+const Bar = ({ sx, variant, ...rest }) => {
+  return (
+    <Box
+      as="hr"
+      {...rest}
+      sx={merge(
+        {
+          bg: 'primaryText',
+          border: 0,
+          height: 1,
+        },
+        sx
+      )}
+      variant={`bar.${variant}`}
+    />
+  )
+}
 
-const Bar = styled.hr`
-  height: 1px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background-color: ${props => props.theme.colors.primaryText};
-  ${space}
-  ${height}
-  ${bars}
-  ${color}
-`
+Bar.propTypes = {
+  sx: PropTypes.object,
+  variant: PropTypes.string,
+}
 
 Bar.defaultProps = {
   variant: 'normal',
 }
-
-Bar.displayName = 'Bar'
 
 export default Bar

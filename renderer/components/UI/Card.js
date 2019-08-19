@@ -1,24 +1,31 @@
 import React from 'react'
-import styled from 'styled-components'
-import { height } from 'styled-system'
+import PropTypes from 'prop-types'
 import { Card as BaseCard } from 'rebass/styled-components'
+import merge from 'lodash/merge'
 
-const StyledCard = styled(BaseCard)(height)
-
-const Card = React.forwardRef((props, ref) => {
+const Card = React.forwardRef(({ sx, ...rest }, ref) => {
   return (
-    <StyledCard
+    <BaseCard
       ref={ref}
       as="section"
-      bg="primaryColor"
-      borderRadius={5}
-      boxShadow="m"
-      color="primaryText"
-      p={3}
-      {...props}
+      {...rest}
+      sx={merge(
+        {
+          borderRadius: 's',
+          boxShadow: 'm',
+          p: 3,
+          bg: 'primaryColor',
+          color: 'primaryText',
+        },
+        sx
+      )}
     />
   )
 })
+
+Card.propTypes = {
+  sx: PropTypes.object,
+}
 
 Card.displayName = 'Card'
 

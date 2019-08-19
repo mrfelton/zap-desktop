@@ -4,13 +4,12 @@ import { Box } from 'rebass/styled-components'
 const MainContent = props => (
   <Box
     as="article"
+    height="100%"
+    {...props}
     css={`
-      height: 100%;
-      overflow-y: overlay;
-      overflow-x: hidden;
       flex: 1;
     `}
-    {...props}
+    sx={{ overflowY: 'overlay', overflowX: 'hidden' }}
   />
 )
 

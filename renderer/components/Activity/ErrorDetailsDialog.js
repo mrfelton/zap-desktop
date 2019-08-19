@@ -23,7 +23,7 @@ const ErrorDetailsDialog = ({ error, isOpen, onCopy, onClose, ...rest }) => {
   }
 
   return (
-    <DialogOverlay alignItems="center" justifyContent="center" position="fixed">
+    <DialogOverlay alignItems="center" justifyContent="center" sx={{ position: 'fixed' }}>
       <Dialog
         header={headerEl}
         {...rest}

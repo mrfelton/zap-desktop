@@ -1,61 +1,25 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { Box, Flex } from 'rebass/styled-components'
 
-const PanelHeader = ({ children, ...rest }) => (
-  <Box {...rest} as="header">
-    {children}
-  </Box>
-)
-PanelHeader.propTypes = { children: PropTypes.node }
+const PanelHeader = props => <Box as="header" {...props} />
 
-const PanelBody = ({ children, css, ...rest }) => (
+const PanelBody = props => (
   <Box
-    {...rest}
     as="section"
+    {...props}
     css={`
       flex: 1;
     `}
-  >
-    {children}
-  </Box>
+  />
 )
-PanelBody.propTypes = { children: PropTypes.node, css: PropTypes.object }
 
-const PanelFooter = ({ children, ...rest }) => (
-  <Box {...rest} as="footer" pt="auto">
-    {children}
-  </Box>
-)
-PanelFooter.propTypes = { children: PropTypes.node }
+const PanelFooter = props => <Box as="footer" pt="auto" {...props} />
 
-class Panel extends React.Component {
-  static Header = PanelHeader
-  static Body = PanelBody
-  static Footer = PanelFooter
+const Panel = props => <Flex as="article" flexDirection="column" height="100%" {...props} />
 
-  static propTypes = {
-    children: PropTypes.node,
-    css: PropTypes.object,
-  }
-
-  render() {
-    const { children, ...rest } = this.props
-    return (
-      <Flex
-        {...rest}
-        as="article"
-        css={`
-          height: 100%;
-        `}
-        flexDirection="column"
-        {...rest}
-      >
-        {children}
-      </Flex>
-    )
-  }
-}
+Panel.Header = PanelHeader
+Panel.Body = PanelBody
+Panel.Footer = PanelFooter
 
 export default Panel
 export { PanelHeader, PanelBody, PanelFooter }

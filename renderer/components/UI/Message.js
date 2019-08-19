@@ -1,15 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { variant } from 'styled-system'
 import { Box, Flex, Text } from 'rebass/styled-components'
 import Success from 'components/Icon/Success'
 import Warning from 'components/Icon/Warning'
 import Error from 'components/Icon/Error'
 import Spinner from './Spinner'
-
-const messageStyle = variant({ key: 'messages' })
-const StyledMessage = styled(Text)(messageStyle)
 
 class Message extends React.Component {
   static displayName = 'Message'
@@ -35,12 +30,12 @@ class Message extends React.Component {
   render() {
     const { children, justifyContent, variant, ...rest } = this.props
     return (
-      <StyledMessage fontSize="s" fontWeight="normal" variant={variant} {...rest}>
+      <Box fontSize="s" fontWeight="normal" variant={`message.${variant}`} {...rest}>
         <Flex alignItems="flex-start" justifyContent={justifyContent}>
           {this.renderIcon()}
           <Text lineHeight="normal">{children}</Text>
         </Flex>
-      </StyledMessage>
+      </Box>
     )
   }
 }

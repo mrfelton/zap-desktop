@@ -47,6 +47,14 @@ storiesOf('Forms', module)
       </Form>
       <Form mb={4}>
         <Input
+          field="fieldName"
+          id="field-name"
+          label="Field with Label and tooltip"
+          tooltip="Some help text"
+        />
+      </Form>
+      <Form mb={4}>
+        <Input
           description="This field also has a description."
           field="fieldName"
           id="field-name"
@@ -310,7 +318,7 @@ storiesOf('Forms', module)
   .add('Checkbox', () => (
     <Form>
       <Label htmlFor="checkbox">Unchecked</Label>
-      <Checkbox description="Lightning is a layer 2 scaling solution" field="checkbox" />
+      <Checkbox field="checkbox" label="Lightning is a layer 2 scaling solution" />
       <Label htmlFor="checkbox2" mt={4}>
         Checked
       </Label>

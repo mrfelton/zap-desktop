@@ -87,11 +87,13 @@ const Checkbox = ({ label, description, isChecked, isDisabled, onChange, ...rest
     <HiddenCheckbox checked={isChecked} onChange={() => {}} />
     <CheckboxOutline
       alignItems="center"
-      borderRadius={6}
       color={isDisabled ? 'gray' : 'primaryColor'}
       isChecked={isChecked}
       isDisabled={isDisabled}
       justifyContent="center"
+      sx={{
+        borderRadius: 's',
+      }}
       width={18}
     >
       <Checkmark isChecked={isChecked} isDisabled={isDisabled} />

@@ -53,9 +53,9 @@ class Tooltip extends React.Component {
 
     return (
       <Box
-        style={{
-          position: 'relative',
-        }}
+        css={`
+          position: relative;
+        `}
         {...rest}
       >
         <StyledTooltipIconBox
@@ -71,11 +71,15 @@ class Tooltip extends React.Component {
         {hover && (
           <StyledTooltipWrapper
             bg="secondaryColor"
-            border="1px solid gray"
-            borderRadius={5}
-            boxShadow="s"
             p={2}
             pl={3}
+            sx={{
+              borderRadius: 's',
+              boxShadow: 's',
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'gray',
+            }}
           >
             <Text fontWeight="light" ml={2}>
               {children}

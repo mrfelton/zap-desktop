@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Card, Flex, Text } from 'rebass/styled-components'
+import { Box, Flex, Text } from 'rebass/styled-components'
+import merge from 'lodash/merge'
 import X from 'components/Icon/X'
 import Success from 'components/Icon/Success'
 import Warning from 'components/Icon/Warning'
@@ -16,7 +17,6 @@ class Notification extends React.Component {
   static displayName = 'Notification'
 
   static defaultProps = {
-    isProcessing: false,
     variant: 'success',
   }
 
@@ -39,24 +39,28 @@ class Notification extends React.Component {
   render() {
     const { children, isProcessing, variant, ...rest } = this.props
     const { hover } = this.state
+    const { sx = {} } = rest
     return (
-      <Card
-        borderRadius="5px"
-        boxShadow="s"
-        css={`
-          cursor: pointer;
-        `}
-        px={3}
-        py={3}
-        {...this.props}
+      <Box
         onMouseEnter={this.hoverOn}
         onMouseLeave={this.hoverOff}
         {...rest}
+        sx={merge(
+          {
+            borderRadius: 's',
+            boxShadow: 's',
+            cursor: 'pointer',
+            px: 3,
+            py: 3,
+          },
+          sx
+        )}
+        variant={`notification.${variant}`}
       >
         <Flex justifyContent="space-between">
           <Flex alignItems="center">
             <Text fontSize="xl">
-              {isProcessing && <Spinner mr="0.5em" size="2em" />}
+              {isProcessing && <Spinner height="0.9em" width="0.9em" />}
               {!isProcessing && variant === 'success' && <Success />}
               {!isProcessing && variant === 'warning' && <Warning />}
               {!isProcessing && variant === 'error' && <Error />}
@@ -69,7 +73,7 @@ class Notification extends React.Component {
             <X strokeWidth={hover ? 5 : 4} />
           </Text>
         </Flex>
-      </Card>
+      </Box>
     )
   }
 }

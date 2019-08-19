@@ -60,10 +60,10 @@ const ProfilePaneNodeInfo = ({ intl, verifyMessage, showNotification, ...rest })
           <TextArea
             css={`
               word-break: break-all;
-              height: 90px;
             `}
             description={intl.formatMessage({ ...messages.verify_message_desc })}
             field="message"
+            height="90px"
             isRequired
             label={intl.formatMessage({ ...messages.verify_message_label })}
             mb={3}

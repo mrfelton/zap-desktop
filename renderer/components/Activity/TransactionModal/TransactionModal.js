@@ -86,13 +86,13 @@ class TransactionModal extends React.PureComponent {
       <Panel {...rest}>
         <Panel.Header>
           <Button
-            css={`
-              position: absolute;
-              bottom: 5px;
-              right: 25px;
-            `}
             icon={Download}
             onClick={this.saveInvoice}
+            sx={{
+              position: 'absolute',
+              bottom: 5,
+              right: 25,
+            }}
             variant="secondary"
           >
             <FormattedMessage {...messages.download_pdf} />

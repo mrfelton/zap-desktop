@@ -1,12 +1,12 @@
 import React from 'react'
 import { Label as BaseLabel } from '@rebass/forms'
 
-const Label = props => <BaseLabel {...props} />
+const Label = React.forwardRef((props, ref) => {
+  return (
+    <BaseLabel ref={ref} color="primaryText" fontWeight="normal" mb={1} width="auto" {...props} />
+  )
+})
 
-Label.defaultProps = {
-  color: 'primaryText',
-  fontWeight: 'normal',
-  mb: 1,
-}
+Label.displayName = 'Card'
 
 export default Label
