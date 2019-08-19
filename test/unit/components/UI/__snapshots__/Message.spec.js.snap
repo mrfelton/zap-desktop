@@ -1,9 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`component.UI.Message should render correctly with default props 1`] = `
-<Message__StyledMessage
+<styled.div
   fontSize="s"
   fontWeight="normal"
+  variant="message.undefined"
 >
   <Styled(styled.div)
     alignItems="flex-start"
@@ -12,11 +13,11 @@ exports[`component.UI.Message should render correctly with default props 1`] = `
       mr={1}
       width="14px"
     />
-    <Styled(styled.div)
+    <ForwardRef
       lineHeight="normal"
     >
       A message
-    </Styled(styled.div)>
+    </ForwardRef>
   </Styled(styled.div)>
-</Message__StyledMessage>
+</styled.div>
 `;
