@@ -8,6 +8,7 @@ import { decodePayReq, getNodeAlias, getTag } from '@zap/utils/crypto'
 import { convert } from '@zap/utils/btc'
 import delay from '@zap/utils/delay'
 import genId from '@zap/utils/genId'
+import { mainLog } from '@zap/utils/log'
 import { grpc } from 'workers'
 import createReducer from './utils/createReducer'
 import { fetchBalance } from './balance'
@@ -232,20 +233,30 @@ export const payInvoice = ({
         timeout_seconds: PAYMENT_TIMEOUT,
       }
 
-      // If this is the first payment attempt and we have been supplied with exact route, attempt to use route.
-      if (route && !originalPaymentId) {
+      // If we have been supplied with exact route, attempt to use that route.
+      if (route && route.isExact) {
+        const paymentHash = getTag(invoice, 'payment_hash')
+        let result = {}
         try {
-          const paymentHash = getTag(invoice, 'payment_hash')
-          const result = await grpc.services.Router.sendToRoute({
+          result = await grpc.services.Router.sendToRoute({
             payment_hash: Buffer.from(paymentHash, 'hex'),
             route,
           })
-          if (result.failure) {
-            throw new Error(result.failure.code)
-          }
         } catch (error) {
-          // If sendToRoute didn't work then try sendPayment.
-          data = await grpc.services.Router.sendPayment(payload)
+          if (error.message === 'unknown service routerrpc.Router') {
+            // We don't know for sure that the node has been compiled with the Router service.
+            // Fall bak to using sendPayment in the event of an error.
+            mainLog.warn('Unable to pay invoice using sendToRoute: %s', error.message)
+            data = await grpc.services.Router.sendPayment(payload)
+          } else {
+            error.details = data
+            throw error
+          }
+        }
+        if (result.failure) {
+          const error = new Error(result.failure.code)
+          error.details = data
+          throw error
         }
       }
 
