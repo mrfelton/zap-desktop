@@ -1,5 +1,6 @@
 import config from 'config'
 import { createSelector } from 'reselect'
+import semver from 'semver'
 import uniqBy from 'lodash/uniqBy'
 import find from 'lodash/find'
 import errorToUserFriendly from '@zap/utils/userFriendlyErrors'
@@ -12,6 +13,7 @@ import { grpc } from 'workers'
 import createReducer from './utils/createReducer'
 import { fetchBalance } from './balance'
 import { fetchChannels } from './channels'
+import { infoSelectors } from './info'
 import { networkSelectors } from './network'
 import { showError } from './notification'
 import messages from './messages'
@@ -41,6 +43,8 @@ export const DECREASE_PAYMENT_RETRIES = 'DECREASE_PAYMENT_RETRIES'
 const PAYMENT_STATUS_SENDING = 'sending'
 const PAYMENT_STATUS_SUCCESSFUL = 'successful'
 const PAYMENT_STATUS_FAILED = 'failed'
+
+const PAYMENT_TIMEOUT = 15
 
 // ------------------------------------
 // Helpers
@@ -181,13 +185,10 @@ const decPaymentRetry = paymentId => ({
  * @param {string} options.originalPaymentId Id of the original payment if (required if this is a payment retry)
  * @returns {Function} Thunk
  */
-export const payInvoice = ({
-  payReq,
-  amt,
-  feeLimit,
-  retries = 0,
-  originalPaymentId,
-}) => async dispatch => {
+export const payInvoice = ({ payReq, amt, feeLimit, retries = 0, originalPaymentId }) => async (
+  dispatch,
+  getState
+) => {
   let paymentId = originalPaymentId
 
   // If we already have an id then this is a retry. Decrease the retry count.
@@ -214,12 +215,29 @@ export const payInvoice = ({
 
   // Submit the payment to LND.
   try {
-    const data = await grpc.services.Lightning.sendPayment({
+    let data
+    const { millisatoshis } = decodePayReq(payReq)
+    const payload = {
       paymentId,
       payment_request: payReq,
-      amt,
+      amt: !millisatoshis && amt,
       fee_limit: { fixed: feeLimit },
-    })
+    }
+
+    // For lnd 0.7.1-beta and later, use the Router API.
+    const lndVersion = infoSelectors.grpcProtoVersion(getState())
+    if (semver.gte(lndVersion, '0.7.1-beta', { includePrerelease: true })) {
+      data = await grpc.services.Router.sendPayment({
+        ...payload,
+        timeout_seconds: PAYMENT_TIMEOUT,
+      })
+    }
+
+    // For older versions use the legacy Lightning.sendPayment method.
+    else {
+      data = await grpc.services.Lightning.sendPayment(payload)
+    }
+
     dispatch(paymentSuccessful(data))
   } catch (e) {
     const { details: data, message: error } = e
