@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import semver from 'semver'
 import get from 'lodash/get'
 import { networks } from '@zap/utils/crypto'
 import { grpc } from 'workers'
@@ -280,6 +281,17 @@ infoSelectors.commitString = createSelector(
     }
     const commitString = version.split(' ')[1]
     return commitString ? commitString.replace('commit=', '') : undefined
+  }
+)
+
+// Check wether node has support for Router service
+infoSelectors.hasRouterSupport = createSelector(
+  infoSelectors.grpcProtoVersion,
+  version => {
+    if (!version) {
+      return false
+    }
+    return semver.gte(version, '0.7.1-beta', { includePrerelease: true })
   }
 )
 
