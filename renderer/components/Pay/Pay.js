@@ -125,8 +125,7 @@ class Pay extends React.Component {
       prevState.currentStep === PAY_FORM_STEPS.address &&
       currentStep === PAY_FORM_STEPS.summary
     ) {
-      const { payeeNodeKey } = invoice
-      queryRoutes(payeeNodeKey, this.amountInSats())
+      queryRoutes(invoice)
     }
   }
 

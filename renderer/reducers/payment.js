@@ -235,17 +235,13 @@ export const payInvoice = ({
       // If this is the first payment attempt and we have been supplied with exact route, attempt to use route.
       if (route && !originalPaymentId) {
         try {
-          const routeToUse = { ...route }
-          delete routeToUse.isExact
           const paymentHash = getTag(invoice, 'payment_hash')
-          const { failure } = await grpc.services.Router.sendToRoute({
+          const result = await grpc.services.Router.sendToRoute({
             payment_hash: Buffer.from(paymentHash, 'hex'),
-            route: routeToUse,
+            route,
           })
-          if (failure) {
-            const error = new Error(failure.code)
-            error.details = data
-            throw error
+          if (result.failure) {
+            throw new Error(result.failure.code)
           }
         } catch (error) {
           // If sendToRoute didn't work then try sendPayment.
