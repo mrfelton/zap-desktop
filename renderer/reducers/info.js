@@ -284,7 +284,7 @@ infoSelectors.commitString = createSelector(
   }
 )
 
-// Check wether node has support for Router service
+// Check whether node has support for Router service
 infoSelectors.hasRouterSupport = createSelector(
   infoSelectors.grpcProtoVersion,
   version => {
