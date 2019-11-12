@@ -229,7 +229,7 @@ export const payInvoice = ({
         paymentId,
         payment_request: payReq,
         amt: invoice.millisatoshis ? null : amt,
-        fee_limit: { fixed: feeLimit },
+        fee_limit: feeLimit,
         timeout_seconds: PAYMENT_TIMEOUT,
       }
 
