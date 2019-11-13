@@ -238,11 +238,15 @@ export const payInvoice = ({
         const paymentHash = getTag(invoice, 'payment_hash')
         let result = {}
         try {
+          const thisRoute = { ...route }
+          delete thisRoute.isExact
           result = await grpc.services.Router.sendToRoute({
             payment_hash: Buffer.from(paymentHash, 'hex'),
-            route,
+            route: thisRoute,
           })
+          console.log('RES', result)
         } catch (error) {
+          console.log('ERROR', error)
           if (error.message === 'unknown service routerrpc.Router') {
             // We don't know for sure that the node has been compiled with the Router service.
             // Fall bak to using sendPayment in the event of an error.

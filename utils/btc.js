@@ -71,7 +71,9 @@ export function satoshisToBtc(satoshis) {
 
   // Make sure we are not passing a non-whole number to sb.toBitcoin(). If the number isn't whole we round up
   const numSats = satoshis % 1 === 0 ? satoshis : Math.ceil(satoshis)
-
+  if (Number.isNaN(numSats)) {
+    return 0
+  }
   return sb.toBitcoin(numSats) || 0
 }
 
@@ -101,6 +103,9 @@ export function millisatoshisToBtc(msats) {
   if (isEmptyAmount(msats)) return null
 
   const satoshis = millisatoshisToSatoshis(msats)
+  if (Number.isNaN(satoshis)) {
+    return 0
+  }
   return sb.toBitcoin(satoshis) || 0
 }
 
@@ -263,5 +268,5 @@ export default {
   satoshisToMillisatoshis,
   satoshisToFiat,
 
-  convert
+  convert,
 }

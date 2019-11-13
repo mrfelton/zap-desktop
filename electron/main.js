@@ -18,6 +18,11 @@ import os from 'os'
 import fs from 'fs'
 import bip21 from 'bip21'
 import config from 'config'
+import LndGrpc from 'lnd-grpc'
+import defaults from 'lodash/defaults'
+import omitBy from 'lodash/omitBy'
+import isNil from 'lodash/isNil'
+import { randomBytes } from 'crypto'
 import { mainLog } from '@zap/utils/log'
 import { parseLnUrl } from '@zap/utils/lnurl'
 import appRootPath from '@zap/utils/appRootPath'
@@ -31,6 +36,106 @@ import createPDFGeneratorService from './pdfGenerator/service'
 import ZapUpdater from './updater'
 import ZapMigrator from './migrator'
 import fetchSettings from './utils/fetchSettings'
+
+const grpcOptions = {
+  waitForCert: true,
+  waitForMacaroon: true,
+  grpcOptions: {
+    keepCase: true,
+    longs: String,
+    enums: String,
+    defaults: true,
+    oneofs: true,
+  },
+}
+
+const hostname = 'testnet2'
+
+const host = `${hostname}-lnd.zaphq.io:10009`
+const cert = '/Users/tom/.lnd/testnet2-lnd.zaphq.io/tls.cert'
+const macaroon = '/Users/tom/.lnd/testnet2-lnd.zaphq.io/admin.macaroon'
+
+const runTest = async () => {
+  const grpc = new LndGrpc({ ...grpcOptions, host, cert, macaroon })
+  await grpc.connect()
+
+  try {
+    grpc.services.Router.probePayment = async options => {
+      // Use a payload that has the payment hash set to some random bytes.
+      // This will cause the payment to fail at the final destination.
+      const payload = defaults(omitBy(options, isNil), {
+        payment_hash: new Uint8Array(randomBytes(32)),
+        timeout_seconds: 30,
+        fee_limit_sat: 1000,
+      })
+
+      console.log('Router.probePayment', payload)
+
+      let result
+      let error
+
+      const decorateError = e => {
+        e.details = result
+        return e
+      }
+
+      return new Promise((resolve, reject) => {
+        const call = grpc.services.Router.sendPayment(payload)
+
+        call.on('data', data => {
+          console.log('PROBE DATA :%o', data)
+
+          switch (data.state) {
+            case 'IN_FLIGHT':
+              console.log('PROBE IN_FLIGHT...')
+              break
+
+            case 'FAILED_INCORRECT_PAYMENT_DETAILS':
+              console.log('PROBE SUCCESS: %o', data)
+              result = data.route
+              break
+
+            default:
+              console.log('PROBE FAILED: %o', data)
+              error = new Error(data.state)
+          }
+        })
+
+        call.on('status', status => {
+          console.log('PROBE STATUS :%o', status)
+        })
+
+        call.on('error', e => {
+          console.log('PROBE ERROR :%o', e)
+          error = e
+        })
+
+        call.on('end', () => {
+          console.log('PROBE END')
+          if (error) {
+            return reject(decorateError(error))
+          }
+          if (!result) {
+            return reject(decorateError(new Error('TERMINATED_EARLY')))
+          }
+          return resolve(result)
+        })
+      })
+    }
+
+    const route = await grpc.services.Router.probePayment({
+      dest: Buffer.from(
+        '029e87deb7d99e4660437a3fb5eb76fb8ebae1778152f72c3aac1bcd0f5e9986bc',
+        'hex'
+      ),
+      amt: 5000,
+      final_cltv_delta: 40,
+    })
+    console.log('route', route)
+  } catch (e) {
+    console.log('e....', e)
+  }
+}
 
 // Set the Electron userDir to a temporary directory if the ELECTRON_USER_DIR_TEMP env var is set.
 // This provides an easy way to run the app with a completely fresh environment, useful for e2e tests.
@@ -195,6 +300,7 @@ app.on('will-finish-launching', () => {
  * Initialize Zap as soon as electron is ready.
  */
 app.on('ready', async () => {
+  await runTest()
   mainLog.trace('app.ready')
   mainLog.timeEnd('Time until app is ready')
 

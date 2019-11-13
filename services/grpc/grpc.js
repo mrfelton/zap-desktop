@@ -352,7 +352,26 @@ class ZapGrpc extends EventEmitter {
     const waitForMacaroon = type === 'local'
     const waitForCert = type === 'local'
 
-    return { host, cert, macaroon, waitForMacaroon, waitForCert, useMacaroon, protoDir }
+    // By default lnd-grpc uses Number type for longs however this causes corrupt chan_id values as the chan_id values
+    // are larger than the js can handle as native Numbers.
+    const grpcOptions = {
+      keepCase: true,
+      longs: String,
+      enums: String,
+      defaults: true,
+      oneofs: true,
+    }
+
+    return {
+      host,
+      cert,
+      macaroon,
+      waitForMacaroon,
+      waitForCert,
+      useMacaroon,
+      protoDir,
+      grpcOptions,
+    }
   }
 
   /**

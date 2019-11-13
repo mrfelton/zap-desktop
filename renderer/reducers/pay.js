@@ -236,6 +236,7 @@ export const queryRoutes = invoice => async (dispatch, getState) => {
       amt: amountInSats,
       final_cltv_delta: getTag(invoice, 'min_final_cltv_expiry'),
     })
+    console.log('route', route)
     // Flag this as an exact route. This can be used as a hint for whether to use sendToRoute to fulfil the payment.
     route.isExact = true
     routes.push(route)
