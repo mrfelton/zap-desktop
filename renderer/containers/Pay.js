@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { Pay } from 'components/Pay'
 import { fetchTickers, tickerSelectors } from 'reducers/ticker'
-import { setRedirectPayReq, queryFees, queryRoutes } from 'reducers/pay'
+import { setRedirectPayReq, queryFees, queryRoutes, paySelectors } from 'reducers/pay'
 import { balanceSelectors } from 'reducers/balance'
 import { addFilter } from 'reducers/activity'
 import { channelsSelectors } from 'reducers/channels'
@@ -25,6 +25,7 @@ const mapStateToProps = state => ({
   routes: state.pay.routes,
   maxOneTimeSend: channelsSelectors.maxOneTimeSend(state),
   walletBalanceConfirmed: balanceSelectors.walletBalanceConfirmed(state),
+  isProcessing: paySelectors.isQueryingRoutes(state),
 })
 
 const mapDispatchToProps = {
