@@ -354,6 +354,7 @@ const ACTION_HANDLERS = {
 
 const paySelectors = {}
 const getLnurlWithdrawParamsSelector = state => state.pay.lnurlWithdrawParams
+const isQueryingRoutesSelector = state => state.pay.isQueryingRoutes
 
 paySelectors.willShowLnurlWithdrawalPrompt = createSelector(
   getLnurlWithdrawParamsSelector,
@@ -366,6 +367,11 @@ paySelectors.willShowLnurlWithdrawalPrompt = createSelector(
 paySelectors.lnurlWithdrawParams = createSelector(
   getLnurlWithdrawParamsSelector,
   params => params
+)
+
+paySelectors.isQueryingRoutes = createSelector(
+  isQueryingRoutesSelector,
+  value => value
 )
 export { paySelectors }
 
