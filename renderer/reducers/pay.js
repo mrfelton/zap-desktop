@@ -2,6 +2,7 @@ import get from 'lodash/get'
 import { createSelector } from 'reselect'
 import { send } from 'redux-electron-ipc'
 import { grpc } from 'workers'
+import { mainLog } from '@zap/utils/log'
 import { getIntl } from '@zap/i18n'
 import { convert } from '@zap/utils/btc'
 import { estimateFeeRange } from '@zap/utils/fee'
@@ -32,6 +33,7 @@ const initialState = {
   queryFeesError: null,
   queryRoutesError: null,
   redirectPayReq: null,
+  paymentRequest: null, // Current PR we are fetching routes for
   lnurlWithdrawParams: null,
   routes: [],
 }
@@ -217,8 +219,10 @@ export const queryFees = (address, amountInSats) => async (dispatch, getState) =
  * @returns {Function} Thunk
  */
 export const queryRoutes = invoice => async (dispatch, getState) => {
-  const { payeeNodeKey, millisatoshis } = invoice
+  const { payeeNodeKey, millisatoshis, paymentRequest } = invoice
   const amountInSats = millisatoshis / 1000
+
+  const isCurrentPr = () => paymentRequest === paymentRequestSelector(getState())
 
   const callQueryRoutes = async () => {
     const { routes } = await grpc.services.Lightning.queryRoutes({
@@ -242,7 +246,7 @@ export const queryRoutes = invoice => async (dispatch, getState) => {
     return routes
   }
 
-  dispatch({ type: QUERY_ROUTES, pubKey: payeeNodeKey })
+  dispatch({ type: QUERY_ROUTES, paymentRequest, pubKey: payeeNodeKey })
 
   try {
     let routes = []
@@ -257,20 +261,29 @@ export const queryRoutes = invoice => async (dispatch, getState) => {
           throw error
         }
 
-        // There is no guarentee that the lnd node has the Router service enabled.
+        // There is no guarantee that the lnd node has the Router service enabled.
         // Fall back to using queryRoutes if we got some other type of error.
         routes = await callQueryRoutes()
       }
     }
-
     // For older versions use queryRoutes.
     else {
       routes = await callQueryRoutes()
     }
 
-    dispatch({ type: QUERY_ROUTES_SUCCESS, routes })
+    // Check if routes match current PR to be sure we will be paying the correct PR.
+    if (isCurrentPr()) {
+      dispatch({ type: QUERY_ROUTES_SUCCESS, routes, paymentRequest })
+    } else {
+      mainLog.warn('Received route data for a stale pr')
+    }
   } catch (e) {
-    dispatch({ type: QUERY_ROUTES_FAILURE, error: e.message })
+    // Check if routes match current PR to be sure we will be paying the correct PR.
+    if (isCurrentPr()) {
+      dispatch({ type: QUERY_ROUTES_FAILURE, error: e.message })
+    } else {
+      mainLog.warn('Query routes failure for a stale pr')
+    }
   }
 }
 
@@ -319,9 +332,10 @@ const ACTION_HANDLERS = {
     state.onchainFees = {}
     state.queryFeesError = error
   },
-  [QUERY_ROUTES]: (state, { pubKey }) => {
+  [QUERY_ROUTES]: (state, { pubKey, paymentRequest }) => {
     state.isQueryingRoutes = true
     state.pubKey = pubKey
+    state.paymentRequest = paymentRequest
     state.queryRoutesError = null
     state.routes = []
   },
@@ -333,6 +347,7 @@ const ACTION_HANDLERS = {
   [QUERY_ROUTES_FAILURE]: (state, { error }) => {
     state.isQueryingRoutes = false
     state.pubKey = null
+    state.paymentRequest = null
     state.queryRoutesError = error
     state.routes = []
   },
@@ -355,6 +370,7 @@ const ACTION_HANDLERS = {
 const paySelectors = {}
 const getLnurlWithdrawParamsSelector = state => state.pay.lnurlWithdrawParams
 const isQueryingRoutesSelector = state => state.pay.isQueryingRoutes
+const paymentRequestSelector = state => state.pay.paymentRequest
 
 paySelectors.willShowLnurlWithdrawalPrompt = createSelector(
   getLnurlWithdrawParamsSelector,
