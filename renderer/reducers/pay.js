@@ -29,7 +29,6 @@ const initialState = {
     medium: null,
     slow: null,
   },
-  pubKey: null,
   queryFeesError: null,
   queryRoutesError: null,
   redirectPayReq: null,
@@ -246,7 +245,7 @@ export const queryRoutes = invoice => async (dispatch, getState) => {
     return routes
   }
 
-  dispatch({ type: QUERY_ROUTES, paymentRequest, pubKey: payeeNodeKey })
+  dispatch({ type: QUERY_ROUTES, paymentRequest })
 
   try {
     let routes = []
@@ -273,7 +272,7 @@ export const queryRoutes = invoice => async (dispatch, getState) => {
 
     // Check if routes match current PR to be sure we will be paying the correct PR.
     if (isCurrentPr()) {
-      dispatch({ type: QUERY_ROUTES_SUCCESS, routes, paymentRequest })
+      dispatch({ type: QUERY_ROUTES_SUCCESS, routes })
     } else {
       mainLog.warn('Received route data for a stale pr')
     }
@@ -332,9 +331,8 @@ const ACTION_HANDLERS = {
     state.onchainFees = {}
     state.queryFeesError = error
   },
-  [QUERY_ROUTES]: (state, { pubKey, paymentRequest }) => {
+  [QUERY_ROUTES]: (state, { paymentRequest }) => {
     state.isQueryingRoutes = true
-    state.pubKey = pubKey
     state.paymentRequest = paymentRequest
     state.queryRoutesError = null
     state.routes = []
@@ -342,11 +340,11 @@ const ACTION_HANDLERS = {
   [QUERY_ROUTES_SUCCESS]: (state, { routes }) => {
     state.isQueryingRoutes = false
     state.queryRoutesError = null
+    state.paymentRequest = null
     state.routes = routes
   },
   [QUERY_ROUTES_FAILURE]: (state, { error }) => {
     state.isQueryingRoutes = false
-    state.pubKey = null
     state.paymentRequest = null
     state.queryRoutesError = error
     state.routes = []
