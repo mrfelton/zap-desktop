@@ -46,7 +46,7 @@ describe('reducers', () => {
     it('should handle QUERY_ROUTES', () => {
       const action = {
         type: QUERY_ROUTES,
-        pubKey: 'somepubkey',
+        paymentRequest: 'some_pr',
       }
       expect(snapshotDiff(reducer(undefined, {}), reducer(undefined, action))).toMatchSnapshot()
     })
