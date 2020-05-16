@@ -27,6 +27,46 @@ const defaultPaymentOptions = {
   maxParts: PAYMENT_MAX_PARTS,
 }
 
+const paymentStateToMessage = code => {
+  switch (code) {
+    case 'IN_FLIGHT':
+      return 'Payment is still in flight.'
+    case 'SUCCEEDED':
+      return 'Payment completed successfully.'
+    case 'FAILED_TIMEOUT':
+      return 'There are more routes to try, but the payment timeout was exceeded.'
+    case 'FAILED_NO_ROUTE':
+      return 'All possible routes were tried and failed permanently. Or were no routes to the destination at all.'
+    case 'FAILED_ERROR':
+      return 'A non-recoverable error has occured.'
+    case 'FAILED_INCORRECT_PAYMENT_DETAILS':
+      return 'Payment details incorrect (unknown hash, invalid amt or invalid final cltv delta).'
+    case 'FAILED_INSUFFICIENT_BALANCE':
+      return 'Insufficient local balance.'
+    default:
+      return code
+  }
+}
+
+const failureReasonToMessage = code => {
+  switch (code) {
+    case 'FAILURE_REASON_NONE':
+      return "Payment isn't failed (yet)."
+    case 'FAILURE_REASON_TIMEOUT':
+      return 'There are more routes to try, but the payment timeout was exceeded.'
+    case 'FAILURE_REASON_NO_ROUTE':
+      return 'All possible routes were tried and failed permanently. Or were no routes to the destination at all.'
+    case 'FAILURE_REASON_ERROR':
+      return ' A non-recoverable error has occured.'
+    case 'FAILURE_REASON_INCORRECT_PAYMENT_DETAILS':
+      return 'Payment details incorrect (unknown hash, invalid amt or invalid final cltv delta).'
+    case 'FAILURE_REASON_INSUFFICIENT_BALANCE':
+      return 'Insufficient local balance.'
+    default:
+      return code
+  }
+}
+
 // ------------------------------------
 // Overrides
 // ------------------------------------
@@ -87,7 +127,7 @@ async function probePayment(options) {
 
         default:
           grpcLog.warn('PROBE FAILED: %o', data)
-          error = new Error(data.state)
+          error = new Error(paymentStateToMessage(data.state))
       }
     })
 
@@ -157,7 +197,7 @@ async function sendPayment(options = {}) {
 
         default:
           grpcLog.warn('PAYMENT FAILED: %o', data)
-          error = new Error(data.state)
+          error = new Error(paymentStateToMessage(data.state))
       }
     })
 
@@ -224,7 +264,8 @@ async function sendPaymentV2(options = {}) {
 
         default:
           grpcLog.warn('PAYMENT FAILED: %o', data)
-          error = new Error(data.failureReason)
+          error = new Error(failureReasonToMessage(data.failureReason))
+          error.code = data.failureReason
       }
     })
 

@@ -10,7 +10,6 @@ import { CoinBig } from '@zap/utils/coin'
 import { getIntl } from '@zap/i18n'
 import delay from '@zap/utils/delay'
 import genId from '@zap/utils/genId'
-import errorToUserFriendly from '@zap/utils/userFriendlyErrors'
 import { grpc } from 'workers'
 import { addressSelectors, newAddress } from './address'
 import { fetchBalance } from './balance'
@@ -188,7 +187,7 @@ export const sendCoins = ({
     await grpc.services.Lightning.sendCoins(payload)
     dispatch(transactionSuccessful({ ...payload, internalId }))
   } catch (e) {
-    dispatch(transactionFailed({ error: e.message, internalId }))
+    dispatch(transactionFailed({ error: { message: e.message, code: e.code }, internalId }))
   }
 }
 
@@ -223,13 +222,14 @@ export const transactionSuccessful = ({ internalId }) => async (dispatch, getSta
  * @returns {Function} Thunk
  */
 export const transactionFailed = ({ internalId, error }) => async (dispatch, getState) => {
+  const { code, message, detail } = error
   const { timestamp } = find(transactionsSendingSelector(getState(), { internalId }))
 
   // Ensure payment stays in sending state for at least 2 seconds.
   await delay(2000 - (Date.now() - timestamp * 1000))
 
   // Mark the payment as failed.
-  dispatch({ type: TRANSACTION_FAILED, internalId, error: errorToUserFriendly(error) })
+  dispatch({ type: TRANSACTION_FAILED, internalId, error: { code, message, detail } })
 }
 
 /**
