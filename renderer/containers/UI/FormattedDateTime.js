@@ -35,7 +35,7 @@ FormattedDateTime.propTypes = {
   format: PropTypes.oneOf(['date', 'time']),
   month: PropTypes.string,
   timeDisplayMode: PropTypes.oneOf(['12hour', '24hour']),
-  value: PropTypes.any.isRequired,
+  value: PropTypes.oneOfType([PropTypes.number, PropTypes.instanceOf(Date)]).isRequired,
 }
 
 export default connect(mapStateToProps)(FormattedDateTime)

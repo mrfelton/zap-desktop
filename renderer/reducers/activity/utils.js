@@ -45,8 +45,8 @@ export const returnTimestamp = activity => {
 export const addDate = entry => {
   const timestamp = returnTimestamp(entry)
   const d = new Date(timestamp * 1000)
-  const date = d.getDate()
-  return { ...entry, date: `${months[d.getMonth()]} ${date}, ${d.getFullYear()}`, timestamp }
+  const date = d.toDateString()
+  return { ...entry, date: new Date(date).getTime(), timestamp }
 }
 
 /**
