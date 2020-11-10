@@ -8,19 +8,20 @@ const mapStateToProps = state => ({
   timeDisplayMode: settingsSelectors.currentConfig(state).timeDisplayMode,
 })
 
-const FormattedDateTime = ({ timeDisplayMode, format, month = 'long', value }) => {
-  const hour12 = timeDisplayMode && timeDisplayMode === '12hour' ? 1 : 0
+const FormattedDateTime = ({ timeDisplayMode = '12hour', format, month = 'long', value }) => {
+  const is12Hour = timeDisplayMode === '12hour'
+
   switch (format) {
     case 'date':
       return <FormattedDate day="2-digit" month={month} value={value} year="numeric" />
     case 'time':
-      return <FormattedTime hour12={hour12} value={value} />
+      return <FormattedTime hour12={is12Hour} value={value} />
     default:
       return (
         <FormattedDate
           day="2-digit"
           hour="numeric"
-          hour12={hour12}
+          hour12={is12Hour}
           minute="numeric"
           month={month}
           value={value}
@@ -31,10 +32,10 @@ const FormattedDateTime = ({ timeDisplayMode, format, month = 'long', value }) =
 }
 
 FormattedDateTime.propTypes = {
-  format: PropTypes.string,
+  format: PropTypes.oneOf(['date', 'time']),
   month: PropTypes.string,
-  timeDisplayMode: PropTypes.string,
-  value: PropTypes.oneOfType([PropTypes.string, PropTypes.instanceOf(Date)]).isRequired,
+  timeDisplayMode: PropTypes.oneOf(['12hour', '24hour']),
+  value: PropTypes.any.isRequired,
 }
 
 export default connect(mapStateToProps)(FormattedDateTime)
